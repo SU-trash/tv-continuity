@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     node_trace = go.Scatter(x=(), y=(),
         hoverinfo='none',
-        showlegend=False, # Don't show nodes in legend
+        showlegend=False,
         mode='markers',
         marker=dict(
             color=[],
