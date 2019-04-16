@@ -19,10 +19,6 @@ import numpy as np
 import plotly # Plotly 3.4.1 appears to be the last stable release
 import plotly.graph_objs as go
 
-import steven_universe as show
-
-BASE_FILE_NAME = 'SU_continuity_graph'
-
 def semicircular_positions(N):
     '''Return a list of n position tuples forming a semicircle on the unit circle. First and last
     positions are always (-1, 0) and (1, 0).'''
@@ -56,6 +52,8 @@ def get_episode_node_dict(episodes):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument(dest='show_data_module', type=str,
+                        help="The python module to import show data from.")
     parser.add_argument('--add-spoiler-free-plot', action='store_true', default=False,
                         dest="add_spoiler_free_plot",
                         help="Additionally create a plot with no mouseover text" \
@@ -63,6 +61,9 @@ if __name__ == '__main__':
     parser.add_argument('--publish', action='store_true', dest="publish", default=False,
                         help="Publicly publish the plot to the preset plotly profile.")
     args = parser.parse_args()
+
+    # Import show data from the given module
+    show = __import__(args.show_data_module)
 
     print('Creating continuity plot...')
 
@@ -172,7 +173,7 @@ if __name__ == '__main__':
 
     # Prepare the figure layout for the plots
     fig_layout = go.Layout(
-        title='<br><b>Continuity in Steven Universe</b>',
+        title=f'<br><b>Continuity in {show.title}</b>',
         titlefont=dict(size=16),
         showlegend=True,
         legend=dict(x=0.9, y=0.95),
@@ -199,12 +200,12 @@ if __name__ == '__main__':
                 data=[node_trace, plot_trace, callbacks_trace, foreshadowing_trace],
                 layout=fig_layout)
 
-        no_spoilers_file_name = BASE_FILE_NAME + '_no_spoilers'
+        no_spoilers_filename = args.show_data_module + '_no_spoilers_continuity_graph'
         if not args.publish:
-            plotly.offline.plot(spoiler_free_fig, filename=no_spoilers_file_name + '.html',
+            plotly.offline.plot(spoiler_free_fig, filename=no_spoilers_filename + '.html',
                                 show_link=False, auto_open=True)
         else:
-            plotly.plotly.plot(spoiler_free_fig, filename=no_spoilers_file_name, sharing='public')
+            plotly.plotly.plot(spoiler_free_fig, filename=no_spoilers_filename, sharing='public')
 
     print('Plotting the figure with Plotly...', flush=True)
     # Add the node mouseover data now that we're done with the spoiler-free plot
@@ -219,9 +220,10 @@ if __name__ == '__main__':
     fig = go.Figure(data=[node_trace, plot_trace, callbacks_trace, foreshadowing_trace],
                     layout=fig_layout)
 
+    filename = args.show_data_module + '_continuity_graph'
     if not args.publish:
-        plotly.offline.plot(fig, filename=BASE_FILE_NAME + '.html', show_link=False, auto_open=True)
+        plotly.offline.plot(fig, filename=filename + '.html', show_link=False, auto_open=True)
     else:
-        plotly.plotly.plot(fig, filename=BASE_FILE_NAME, sharing='public')
+        plotly.plotly.plot(fig, filename=filename, sharing='public')
 
     print('Done.')
