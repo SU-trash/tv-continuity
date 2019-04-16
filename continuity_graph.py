@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # TODO: Priority List:
+# - Allow loading the show data in dynamically and agnostically
 # - Modify mouseover text when foreshadowing/callbacks/plot threads traces are disabled
 # - Add a way to view a single season at a time (with nodes redistributed into a new semicircle)
 #   Alternatively, just make some separate per-season graphs
@@ -211,7 +212,7 @@ if __name__ == '__main__':
     # Add the node mouseover data now that we're done with the spoiler-free plot
     # Add node mouseover text to the node trace, now that we're done updating them with edge data
     node_trace.hoverinfo = 'text'
-    #node_trace.hoverlabel = dict(align='left')
+    node_trace.hoverlabel = dict(align='left')
     node_trace.hovertext = tuple(text for text in mouseover_texts)
     # Modify the helper text for the spoiler version to mention the node mouseovers
     fig_layout.annotations[0]['text'] = \
