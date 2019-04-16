@@ -168,23 +168,13 @@ episodes = {
 
 num_episodes = len(episodes)
 
-# Convenience dict to map episode numbers to their relative list index
-# (since multi-part episodes may take up multiple 'episode numbers')
-episode_indices = {}
-for i, ep_num in enumerate(episodes):
-    episode_indices[ep_num] = i
-    if isinstance(ep_num, str):
-        start_ep, end_ep = ep_num.replace('/', '-').split('-')
-        for j in range(int(start_ep), int(end_ep) + 1):
-            episode_indices[j] = i
-
 # Season colors also set to match Wikipedia
 # (Section colors from https://en.wikipedia.org/wiki/List_of_Steven_Universe_episodes)
 seasons = {1: dict(start=1, end=52, color='#FF5E6D'),
            2: dict(start=53, end=78, color='#91ECDD'),
            3: dict(start=79, end=103, color='#B895D1'),
            4: dict(start=104, end=128, color='#A12766'),
-           5: dict(start=129, end=157, color='#ACDF7D')}
+           5: dict(start=129, end=160, color='#ACDF7D')}
 
 # Episodes that logically 'follow' each other directly in the plot
 plot_threads = [

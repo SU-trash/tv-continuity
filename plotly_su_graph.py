@@ -38,6 +38,22 @@ def semicircular_positions(N):
     return posns
 
 
+def get_episode_node_dict(episodes):
+    '''Given a dict of number:title of episodes, where number is either an integer or a string of
+    multiple integers formatted as 'i/i+1' or 'i-j' (for multi-part episodes), return a convenience
+    dict that maps any episode number/string to its relative position in the list of nodes.
+    E.g. for episodes [1, 2/3, 4], episode 4 is only the third node.
+    '''
+    episode_node_dict = {}
+    for i, ep_num in enumerate(episodes.keys()):
+        episode_node_dict[ep_num] = i
+        if isinstance(ep_num, str):
+            start_ep, end_ep = ep_num.replace('/', '-').split('-')
+            for j in range(int(start_ep), int(end_ep) + 1):
+                episode_node_dict[j] = i
+    return episode_node_dict
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--add-spoiler-free-plot', action='store_true', default=False,
@@ -68,13 +84,15 @@ if __name__ == '__main__':
     node_trace['x'] = tuple(node_posns[i][0] for i in range(show.num_episodes))
     node_trace['y'] = tuple(node_posns[i][1] for i in range(show.num_episodes))
 
+    # Pre-process the episodes data for later convenience
+    ep_node_dict = get_episode_node_dict(show.episodes)
+
     # Color nodes by season
     node_colors = []
     for season_info in show.seasons.values():
-        # Use episode_indices dict to take N-length eps into account
-        start = show.episode_indices[season_info['start']]
+        start = ep_node_dict[season_info['start']]
         if 'end' in season_info:
-            end = show.episode_indices[season_info['end']]
+            end = ep_node_dict[season_info['end']]
         else: # If the season hasn't yet ended:
             end = show.num_episodes
         num_ep_nodes = end - start + 1
@@ -98,13 +116,13 @@ if __name__ == '__main__':
     # Since plotly stores data in tuples it's more efficient for us to first build them with lists
     x_values, y_values = [], []
     for source_ep, target_ep, description in show.plot_threads:
-        posn1 = node_posns[show.episode_indices[source_ep]]
-        posn2 = node_posns[show.episode_indices[target_ep]]
+        posn1 = node_posns[ep_node_dict[source_ep]]
+        posn2 = node_posns[ep_node_dict[target_ep]]
         x_values.extend([posn1[0], posn2[0], None])
         y_values.extend([posn1[1], posn2[1], None])
 
         # Add description of plot threads an episode picks up to its mouseover text
-        mouseover_texts[show.episode_indices[target_ep]] += \
+        mouseover_texts[ep_node_dict[target_ep]] += \
                 f'<br>Continues plot of ep {source_ep}; {description}'
     plot_trace['x'], plot_trace['y'] = tuple(x_values), tuple(y_values)
 
@@ -118,13 +136,13 @@ if __name__ == '__main__':
     # Since plotly stores data in tuples it's more efficient for us to first build them with lists
     x_values, y_values = [], []
     for source_ep, prior_ep, description in show.callbacks:
-        posn1 = node_posns[show.episode_indices[source_ep]]
-        posn2 = node_posns[show.episode_indices[prior_ep]]
+        posn1 = node_posns[ep_node_dict[source_ep]]
+        posn2 = node_posns[ep_node_dict[prior_ep]]
         x_values.extend([posn1[0], posn2[0], None])
         y_values.extend([posn1[1], posn2[1], None])
 
         # Add description of callbacks an episode makes to its mouseover text
-        mouseover_texts[show.episode_indices[source_ep]] += \
+        mouseover_texts[ep_node_dict[source_ep]] += \
                 f'<br>Callbacks ep {prior_ep}; {description}'
     callbacks_trace['x'], callbacks_trace['y'] = tuple(x_values), tuple(y_values)
 
@@ -137,19 +155,19 @@ if __name__ == '__main__':
     # Since plotly stores data in tuples it's more efficient for us to first build them with lists
     x_values, y_values = [], []
     for source_ep, future_ep, description in show.foreshadowing:
-        posn1 = node_posns[show.episode_indices[source_ep]]
-        posn2 = node_posns[show.episode_indices[future_ep]]
+        posn1 = node_posns[ep_node_dict[source_ep]]
+        posn2 = node_posns[ep_node_dict[future_ep]]
         x_values.extend([posn1[0], posn2[0], None])
         y_values.extend([posn1[1], posn2[1], None])
 
         # Add mouseover text for foreshadowed events in an episode
-        mouseover_texts[show.episode_indices[future_ep]] += \
+        mouseover_texts[ep_node_dict[future_ep]] += \
                 f'<br>Foreshadowed by ep {source_ep}; {description}'
     foreshadowing_trace['x'], foreshadowing_trace['y'] = tuple(x_values), tuple(y_values)
     # Add mouseover for outgoing foreshadowing to each episode (in a separate loop so foreshadowed
     # events are listed separately from outgoing foreshadowing within a given episode)
     for source_ep, future_ep, description in show.foreshadowing:
-        mouseover_texts[show.episode_indices[source_ep]] += \
+        mouseover_texts[ep_node_dict[source_ep]] += \
                 f'<br>Foreshadows ep {future_ep}; {description}'
 
     # Prepare the figure layout for the plots
