@@ -24,8 +24,6 @@ episodes = {
     13: 'The Battle of Bright Moon'
 }
 
-num_episodes = len(episodes)
-
 # Season colors also set to match Wikipedia
 # (Section colors from https://en.wikipedia.org/wiki/List_of_She-Ra:_Princess_of_Power_episodes)
 seasons = {1: dict(start=1, end=13, color='#A6214E')}
@@ -37,7 +35,7 @@ plot_threads = [
     (3, 4, r'''Recruiting other princesses'''),
     (3, 5, r'''Recruiting other princesses'''),
     (3, 6, r'''Recruiting other princesses'''),
-    (3, 8, r'''Adora / Cat-Ra'''),
+    (3, 8, r'''Adora / Cat-Ra Arc'''),
     (8, 9, r'''Rescue mission'''),
     (9, 10, r'''Glimmer's injury / Entrapta in Fright Zone'''),
     (10, 11, r'''First One's tech / healing'''),
@@ -45,10 +43,13 @@ plot_threads = [
     (12, 13, r'''Hacked planet''')
 ]
 
+# Episodes that foreshadow a future episode
 foreshadowing = [
     (1, 2, r'''Insert foreshadowing; thing foreshadowed''')
 ]
 
+# Episodes that callback to a detail of a previous episode
+# Reoccurences of the subject of a callback are ignored
 callbacks = [
     (2, 1, r'''blah''')
 ]

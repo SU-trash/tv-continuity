@@ -166,8 +166,6 @@ episodes = {
     '157-160': 'Change Your Mind'
 }
 
-num_episodes = len(episodes)
-
 # Season colors also set to match Wikipedia
 # (Section colors from https://en.wikipedia.org/wiki/List_of_Steven_Universe_episodes)
 seasons = {1: dict(start=1, end=52, color='#FF5E6D'),
@@ -401,9 +399,7 @@ foreshadowing = [
     (141, 146, r'''"Rose Quartz isn't real"; RQ=PD'''),
     (148, 149, r'''"Why would she be a cowboy?!"'''),
     (153, 155, r'''Gem on stomach; White Pearl originally belonged to PD''')
-    #(153, ??? r'''WD overly bright like Oz projection; WD lost her physical form'''),
     #(154, ???, r'''Diamond secretions collected / Steven creating pebble; Diamond secretions used in injectors to create life''') # TODO when relevant
-    #(155, ???, r'''White Diamond can't show up to Ball; WD lost her physical form''')
     #(156, ???, r'''War between CGs and homeworld, resolution?'''),
 ]
 
@@ -533,7 +529,7 @@ callbacks = [
     (146, 6, r'''Gem sloop stored in Pearl's gem'''),
     (146, 56, r'''Sea Pals stored in Pearl's gem'''),
     (146, 97, r'''Pearl point stored in Pearl's gem'''),
-    (146, 109, r'''Mystery Girl's # in Pearl's gem'''),
+    (146, 109, r'''Mystery Girl's \# in Pearl's gem'''),
     (150, 11, r'''Meat Beat Mania game'''),
     ('151/152', 4, r'''Together Breakfast as wedding cake'''),
     ('151/152', 86, r'''Greg/Pearl/Steven's tailor-made suits'''),

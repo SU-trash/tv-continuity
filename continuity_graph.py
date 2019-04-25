@@ -25,14 +25,12 @@ def semicircular_positions(N):
     positions are always (-1, 0) and (1, 0).'''
     # Edge case to avoid dividing by 0
     if N == 1:
-        return [(-1.0, 0.0)]
-
-    posns = []
-    for i in range(N):
-        # Calculate the angle of this position in radians
-        theta = (math.pi * (N - 1 - i)) / (N - 1) # Float division
-        posns.append((math.cos(theta), math.sin(theta)))
-    return posns
+        yield (-1.0, 0.0)
+    else:
+        for i in range(N):
+            # Calculate the angle of this position in radians
+            theta = math.pi * (N - 1 - i) / (N - 1)
+            yield (math.cos(theta), math.sin(theta))
 
 
 def get_episode_node_dict(episodes):
@@ -82,9 +80,8 @@ if __name__ == '__main__':
         visible=True) # The thickness of the node's border line
 
     # Get the node posns arranged arranged in a semicircle
-    node_posns = semicircular_positions(show.num_episodes)
-    node_trace['x'] = tuple(node_posns[i][0] for i in range(show.num_episodes))
-    node_trace['y'] = tuple(node_posns[i][1] for i in range(show.num_episodes))
+    node_posns = tuple(semicircular_positions(len(show.episodes)))
+    node_trace['x'], node_trace['y'] = zip(*node_posns)
 
     # Pre-process the episodes data for later convenience
     ep_node_dict = get_episode_node_dict(show.episodes)
@@ -96,9 +93,9 @@ if __name__ == '__main__':
         if 'end' in season_info:
             end = ep_node_dict[season_info['end']]
         else: # If the season hasn't yet ended:
-            end = show.num_episodes
+            end = len(show.episodes)
         num_ep_nodes = end - start + 1
-        node_colors.extend(num_ep_nodes*[season_info['color']])
+        node_colors.extend(num_ep_nodes * [season_info['color']])
     node_trace['marker']['color'] = tuple(node_colors)
 
     # Create mouseover text for each node. We'll update the mouseover text for each episode based
