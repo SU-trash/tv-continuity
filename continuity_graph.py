@@ -17,8 +17,9 @@ import argparse
 import math
 import numpy as np
 
-import plotly # Plotly 3.4.1 appears to be the last stable release
-import plotly.graph_objs as go
+import chart_studio # Stable as of 1.0.0
+import plotly
+import plotly.graph_objs as go # Stable as of 4.1.1
 
 def semicircular_positions(N):
     '''Return a list of n position tuples forming a semicircle on the unit circle. First and last
@@ -171,10 +172,10 @@ if __name__ == '__main__':
 
     # Prepare the figure layout for the plots
     fig_layout = go.Layout(
-        title=f'<br><b>Continuity in {show.title}</b>',
-        titlefont=dict(size=16),
+        title=dict(text=f'<br><b>Continuity in {show.title}</b>',
+                   font=dict(color='black', size=16), x=0.5),
         showlegend=True,
-        legend=dict(x=0.9, y=0.95),
+        legend=dict(x=0.9, y=0.95, itemdoubleclick=False),
         # If hovermode is set to 'closest', it picks any node close enough to the mouse's position
         # If set to e.g. 'x', picks the node (any distance away) which is closest to the mouse's x
         # position.
@@ -186,6 +187,7 @@ if __name__ == '__main__':
             showarrow=False,
             xref="paper", yref="paper",
             x=1.0, y=1.0) ],
+        plot_bgcolor='white',
         # Maintain the x-y ratio so the plot is a semicircle regardless of screen size
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False,
@@ -203,7 +205,7 @@ if __name__ == '__main__':
             plotly.offline.plot(spoiler_free_fig, filename=no_spoilers_filename + '.html',
                                 show_link=False, auto_open=True)
         else:
-            plotly.plotly.plot(spoiler_free_fig, filename=no_spoilers_filename, sharing='public')
+            chart_studio.plotly.plot(spoiler_free_fig, filename=no_spoilers_filename, sharing='public')
 
     print('Plotting the figure with Plotly...', flush=True)
     # Add the node mouseover data now that we're done with the spoiler-free plot
@@ -222,6 +224,6 @@ if __name__ == '__main__':
     if not args.publish:
         plotly.offline.plot(fig, filename=filename + '.html', show_link=False, auto_open=True)
     else:
-        plotly.plotly.plot(fig, filename=filename, sharing='public')
+        chart_studio.plotly.plot(fig, filename=filename, sharing='public')
 
     print('Done.')
