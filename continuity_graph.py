@@ -22,8 +22,9 @@ import plotly
 import plotly.graph_objs as go # Stable as of 4.1.1
 
 def semicircular_positions(N):
-    '''Return a list of n position tuples forming a semicircle on the unit circle. First and last
-    positions are always (-1, 0) and (1, 0).'''
+    '''Return an iterable of n positions (tuples) forming a semicircle on the unit circle. First and
+    last positions are always (-1, 0) and (1, 0).
+    '''
     # Edge case to avoid dividing by 0
     if N == 1:
         yield (-1.0, 0.0)
@@ -39,6 +40,7 @@ def get_episode_node_dict(episodes):
     multiple integers formatted as 'i/i+1' or 'i-j' (for multi-part episodes), return a convenience
     dict that maps any episode number/string to its relative position in the list of nodes.
     E.g. for episodes [1, 2/3, 4], episode 4 is only the third node.
+    This gives a bit of flexibility in how the edges reference multi-part episodes.
     '''
     episode_node_dict = {}
     for i, ep_num in enumerate(episodes.keys()):
@@ -48,6 +50,44 @@ def get_episode_node_dict(episodes):
             for j in range(int(start_ep), int(end_ep) + 1):
                 episode_node_dict[j] = i
     return episode_node_dict
+
+
+def get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict, data,
+                              legend_name, edge_color, visible=True,
+                              to_text=None, from_text=None):
+    '''Create a trace of edges for a single kind of continuity. Update the given list of mouseover
+    texts accordingly.
+    '''
+    edge_trace = go.Scatter(x=(), y=(), mode='lines',
+                            name=legend_name,
+                            line=dict(width=0.5, color=edge_color),
+                            hoverinfo='none',
+                            visible=visible)
+    # Since plotly stores data in tuples it's more efficient for us to first build them with lists
+    x_values, y_values = [], []
+    for from_ep, to_ep, description in data:
+        posn1 = node_posns[ep_node_dict[from_ep]]
+        posn2 = node_posns[ep_node_dict[to_ep]]
+
+        # Add an edge
+        x_values.extend([posn1[0], posn2[0], None])
+        y_values.extend([posn1[1], posn2[1], None])
+
+        # Add mouseover text to the 'to' nodes
+        if to_text is not None:
+            mouseover_texts[ep_node_dict[to_ep]] += \
+                '<br>' + to_text.format(from_ep=from_ep) + f'; {description}'
+
+    # Add mouseover to the 'from' nodes (in a separate loop so incoming continuity is listed
+    # before outgoing continuity within a given episode)
+    if from_text is not None:
+        for from_ep, to_ep, description in data:
+            mouseover_texts[ep_node_dict[from_ep]] += \
+                '<br>' + from_text.format(to_ep=to_ep) + f'; {description}'
+
+    edge_trace['x'], edge_trace['y'] = tuple(x_values), tuple(y_values)
+
+    return edge_trace
 
 
 if __name__ == '__main__':
@@ -106,69 +146,23 @@ if __name__ == '__main__':
 
     print('    Adding edges...', flush=True)
 
-    # Add black edges for plot threads
-    plot_trace = go.Scatter(x=(), y=(),
-                            mode='lines',
-                            name='Plot Threads',
-                            line=dict(width=0.5, color='black'),
-                            hoverinfo='none',
-                            visible='legendonly')
-    # Since plotly stores data in tuples it's more efficient for us to first build them with lists
-    x_values, y_values = [], []
-    for source_ep, target_ep, description in show.plot_threads:
-        posn1 = node_posns[ep_node_dict[source_ep]]
-        posn2 = node_posns[ep_node_dict[target_ep]]
-        x_values.extend([posn1[0], posn2[0], None])
-        y_values.extend([posn1[1], posn2[1], None])
+    plot_trace = get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict,
+                                           show.plot_threads,
+                                           legend_name='Plot Threads', edge_color='black',
+                                           visible='legendonly',
+                                           to_text='Continues plot of ep {from_ep}')
 
-        # Add description of plot threads an episode picks up to its mouseover text
-        mouseover_texts[ep_node_dict[target_ep]] += \
-                f'<br>Continues plot of ep {source_ep}; {description}'
-    plot_trace['x'], plot_trace['y'] = tuple(x_values), tuple(y_values)
+    callbacks_trace = get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict,
+                                                show.callbacks,
+                                                legend_name='Callbacks', edge_color='orange',
+                                                visible='legendonly',
+                                                from_text='Callbacks ep {to_ep}')
 
-    # Add orange edges for callbacks
-    callbacks_trace = go.Scatter(x=(), y=(),
-                                 mode='lines',
-                                 name='Callbacks',
-                                 line=dict(width=0.5, color='orange'),
-                                 hoverinfo='none',
-                                 visible='legendonly') # Deselect this trace by default
-    # Since plotly stores data in tuples it's more efficient for us to first build them with lists
-    x_values, y_values = [], []
-    for source_ep, prior_ep, description in show.callbacks:
-        posn1 = node_posns[ep_node_dict[source_ep]]
-        posn2 = node_posns[ep_node_dict[prior_ep]]
-        x_values.extend([posn1[0], posn2[0], None])
-        y_values.extend([posn1[1], posn2[1], None])
-
-        # Add description of callbacks an episode makes to its mouseover text
-        mouseover_texts[ep_node_dict[source_ep]] += \
-                f'<br>Callbacks ep {prior_ep}; {description}'
-    callbacks_trace['x'], callbacks_trace['y'] = tuple(x_values), tuple(y_values)
-
-    # Add blue edge for foreshadowing
-    foreshadowing_trace = go.Scatter(x=(), y=(),
-                                     mode='lines',
-                                     name='Foreshadowing',
-                                     line=dict(width=0.5, color='blue'),
-                                     hoverinfo='none')
-    # Since plotly stores data in tuples it's more efficient for us to first build them with lists
-    x_values, y_values = [], []
-    for source_ep, future_ep, description in show.foreshadowing:
-        posn1 = node_posns[ep_node_dict[source_ep]]
-        posn2 = node_posns[ep_node_dict[future_ep]]
-        x_values.extend([posn1[0], posn2[0], None])
-        y_values.extend([posn1[1], posn2[1], None])
-
-        # Add mouseover text for foreshadowed events in an episode
-        mouseover_texts[ep_node_dict[future_ep]] += \
-                f'<br>Foreshadowed by ep {source_ep}; {description}'
-    foreshadowing_trace['x'], foreshadowing_trace['y'] = tuple(x_values), tuple(y_values)
-    # Add mouseover for outgoing foreshadowing to each episode (in a separate loop so foreshadowed
-    # events are listed separately from outgoing foreshadowing within a given episode)
-    for source_ep, future_ep, description in show.foreshadowing:
-        mouseover_texts[ep_node_dict[source_ep]] += \
-                f'<br>Foreshadows ep {future_ep}; {description}'
+    foreshadowing_trace = get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict,
+                                                    show.foreshadowing,
+                                                    legend_name='Foreshadowing', edge_color='blue',
+                                                    to_text='Foreshadowed by ep {from_ep}',
+                                                    from_text='Foreshadows ep {to_ep}')
 
     # Prepare the figure layout for the plots
     fig_layout = go.Layout(
