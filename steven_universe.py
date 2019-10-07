@@ -291,7 +291,8 @@ plot_threads = [
     ('151/152', 153, r'''Diamonds/Steven arc'''),
     (153, 154, r'''Diamonds/Steven Homeworld arc'''),
     (154, 155, r'''Diamonds/Steven Homeworld arc'''),
-    (155, 156, r'''Diamonds/Steven Homeworld arc''')
+    (155, 156, r'''Diamonds/Steven Homeworld arc'''),
+    (156, '157-160', r'''Diamonds/Steven Homeworld arc''')
 ]
 
 # Episodes that foreshadow a future episode
@@ -322,6 +323,7 @@ foreshadowing = [
     (10, 40, r'''"We kept Amethyst"; Amethyst's origin'''),
     (11, 39, r'''"Heightened senses", third eye symbolism; Future vision'''),
     (11, 51, r'''"fighting a giant foot"; homeworld invasion hand ship'''),
+    (11, 52, r'''Garnet's third eye; Garnet fusion'''),
     (13, 16, r'''"even if your [...] body's an illusion"; Gems' bodies being light constructs'''),
     (13, 146, r'''Crown/cape; royalty symbolism; RQ=PD'''),
     (14, 17, r'''Dogcopter 3 poster in background'''),
@@ -346,7 +348,7 @@ foreshadowing = [
     (36, 40, r'''"They're coming back! I can't do this, not again!"; Gem rebellion'''),
     (36, 40, r'''"Preparing to locate and manually reactivate Kindergar-"; Kindergarten(s)'''),
     (37, 52, r'''"Fusion is really hard, even for us." "Not for me"; Garnet fusion'''),
-    #(40, ???, r'''"Cookie Cat! [...] I never considered that you would be evil!"'''), # Not sure what to classify this as
+    (39, 40, r'''"Cookie Cat! [...] I never considered that you would be evil!"; Gems hurt the planet'''),
     (43, 51, r'''Jasper appears on totem pole in U-Stor; Jasper'''),
     (43, 82, r'''"Season 3... that's when the uptight neighbors the Richingtons move next-door"; Peridot/Lapis moving into barn'''),
     (44, '111/112', r'''"I swear that's not his real name."; Steven/Greg's family name'''),
@@ -427,7 +429,6 @@ callbacks = [
     (31, 11, r'''Drill monster holes'''),
     (31, 14, r'''Magic moss flowers'''),
     (34, 30, r'''Sadie's scar'''),
-    #(35, 1, r'''Lion Lickers'''), # Repeat Lion Lickers callback
     (35, 14, r'''Steven/Lars' high five.'''),
     (35, 17, r'''Dogcopter'''),
     (35, 21, r'''VCR in Big Donut'''),
@@ -492,7 +493,6 @@ callbacks = [
     (96, 62, r'''"Bungacowa"'''),
     (96, 86, r'''Sadie humming Pepe's Burgers jingle'''),
     (97, 16, r'''"Boomerang shield"; Lonely Blade'''),
-    #(97, 16, r'''Lonely Blade appears in video game'''), # Duplicate Lonely Blade reference
     ('98/99', 16, r'''Pearl having learnt that movies don't have to make sense'''),
     (100, 87, r'''Alien plush'''),
     (105, 74, r'''Garnet never asks questions; Rose's "No more questions"'''),

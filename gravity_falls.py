@@ -35,7 +35,7 @@ episodes = {
     27: "Society of the Blind Eye",
     28: "Blendin's Game",
     29: "The Love God",
-    30: "Northwest Mansion Mystery" "Northwest Mansion Noir",
+    30: "Northwest Mansion Mystery", # "Northwest Mansion Noir" ?
     31: "Not What He Seems",
     32: "A Tale of Two Stans",
     33: "Dungeons, Dungeons & More Dungeons",
@@ -56,12 +56,18 @@ seasons = {1: dict(start=1, end=20, color='#19D39B'),
 # Episodes that logically 'follow' each other directly in the plot
 plot_threads = [
     (1, 4, r'''Mystery of the Journals arc'''),
-    (1, 20, r'''Stan / Vending machine door'''),
     (4, 11, r'''Gideon arc'''),
     (11, 19, r'''Gideon arc'''),
+    (1, 20, r'''Stan / Vending machine door'''),
     (19, 20, r'''Gideon arc'''),
-    (20, 21, r'''Portal machine arc'''),
+    (9, 28, r'''Blendin's revenge'''),
+    (20, 31, r'''Portal machine arc'''),
     (22, 24, r'''Bunker laptop'''),
+    (31, 35, r'''Dimensional rift'''),
+    (35, 37, r'''Dimensional rift'''),
+    (37, 38, r'''Weirdmageddon arc'''),
+    (38, 39, r'''Weirdmageddon arc'''),
+    (39, 40, r'''Weirdmageddon arc'''),
 ]
 
 # Episodes that foreshadow a future episode
