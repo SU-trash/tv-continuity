@@ -2,14 +2,18 @@
 # -*- coding: utf-8 -*-
 
 # TODO: Priority List:
-# - Allow loading the show data in dynamically and agnostically
+# - Investigate laying all nodes out in a straight line, with data edges instead being elliptical
+#   (semi-circular?) curves above the line. This way, it may(?) be more clear which node(s) an edge
+#   connects to, and viewing data by season (without breaking the layout) should be as simple as
+#   zooming in on the graph. Not sure how to plot curved edges though.
+#   Height of each curve should be lineraly proportional to the distance between the episodes,
+#   though this doesn't necessarily mean semi-circular. A little flatter might look better.
 # - Modify mouseover text when foreshadowing/callbacks/plot threads traces are disabled
 # - Add a way to view a single season at a time (with nodes redistributed into a new semicircle)
 #   Alternatively, just make some separate per-season graphs
-# - Prevent episode nodes from being hidden by plotly on legend double-click (hides all but one
-#   trace, but also hides traces that were hidden from the legend)
 # - See if any use for plotly's 'legendgroup' can be found in future extensions of this
 # - Hide or fade to background edges that don't touch the node currently being hovered over
+#   Dash app allows this but is fairly heavy, code and performance-wise
 
 print('Loading libraries...', flush=True)
 
@@ -66,6 +70,13 @@ def get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict, data,
     # Since plotly stores data in tuples it's more efficient for us to first build them with lists
     x_values, y_values = [], []
     for from_ep, to_ep, description in data:
+        if from_ep not in ep_node_dict:
+            print(f'Warning: Skipping data for unknown episode {repr(from_ep)}')
+            continue
+        elif to_ep not in ep_node_dict:
+            print(f'Warning: Skipping data for unknown episode {repr(to_ep)}')
+            continue
+
         posn1 = node_posns[ep_node_dict[from_ep]]
         posn2 = node_posns[ep_node_dict[to_ep]]
 
@@ -82,6 +93,9 @@ def get_continuity_edge_trace(mouseover_texts, node_posns, ep_node_dict, data,
     # before outgoing continuity within a given episode)
     if from_text is not None:
         for from_ep, to_ep, description in data:
+            if from_ep not in ep_node_dict or to_ep not in ep_node_dict:
+                continue
+
             mouseover_texts[ep_node_dict[from_ep]] += \
                 '<br>' + from_text.format(to_ep=to_ep) + f'; {description}'
 
@@ -206,7 +220,7 @@ if __name__ == '__main__':
     # Add node mouseover text to the node trace, now that we're done updating them with edge data
     node_trace.hoverinfo = 'text'
     node_trace.hoverlabel = dict(align='left')
-    node_trace.hovertext = tuple(text for text in mouseover_texts)
+    node_trace.hovertext = tuple(mouseover_texts)
     # Modify the helper text for the spoiler version to mention the node mouseovers
     fig_layout.annotations[0]['text'] = \
             "Hover over nodes to see details.<br>Click on legend items to show/hide them."
