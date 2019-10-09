@@ -366,7 +366,6 @@ foreshadowing = [
     (58, 76, r'''Diamond authority symbol in arena; Existence of diamond authority'''),
     (58, 102, r'''Cracked PD symbol; death of PD'''),
     (59, 115, r'''Human zoo mentioned by ronaldo'''),
-    (62, 153, r'''Both Pearl and Steven briefly do White Pearl's monochrome T-pose.'''),
     (63, 146, r'''Pink diamond on Sardonyx's feet; Pearl belonged to PD'''),
     (67, 72, r'''"I'm just a Pearl"; Pearls as servants'''),
     (69, 114, r'''"I can't help it if I make a scene / stepping out of my hot pink limousine"; PD/palanquin'''),
