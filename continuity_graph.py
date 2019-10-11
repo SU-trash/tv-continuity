@@ -132,22 +132,13 @@ def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
     return edges, mouseovers_trace
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(dest='show_data_module', type=str,
-                        help="The python module to import show data from.")
-    parser.add_argument('--add-spoiler-free-plot', action='store_true', default=False,
-                        dest="add_spoiler_free_plot",
-                        help="Additionally create a plot with no mouseover text" \
-                             + " (episode titles / connection descriptions)")
-    parser.add_argument('--publish', action='store_true', dest="publish", default=False,
-                        help="Publicly publish the plot to the preset plotly profile.")
-    args = parser.parse_args()
-
+def plot_show_continuity(show_data_module, args):
+    '''Generate an html file graphing continuity in the given show, and open it when done.
+    '''
     # Import show data from the given module
-    show = __import__(args.show_data_module)
+    show = __import__(show_data_module)
 
-    print('Creating continuity plot...')
+    print(f'Creating continuity plot for {show.title}...')
 
     # Add nodes for episodes to the networkx graph
     print('    Adding episode nodes...', flush=True)
@@ -216,7 +207,7 @@ if __name__ == '__main__':
                                    line=foreshadowing_line,
                                    visible=True))
 
-    print('Plotting the figure with Plotly...', flush=True)
+    print('    Plotting the figure with Plotly...', flush=True)
     # Prepare the figure layout for the plots
     fig_layout = go.Layout(
         title=dict(text=f'<br><b>Continuity in {show.title}</b>',
@@ -229,11 +220,6 @@ if __name__ == '__main__':
         hovermode='closest',
         dragmode='pan', # Default mouse mode
         margin=dict(b=5, l=5, r=5, t=40, pad=0),
-        annotations=[ dict(
-            text="Click on legend items to show/hide them.",
-            showarrow=False,
-            xref="paper", yref="paper",
-            x=1.0, y=1.0) ],
         plot_bgcolor='white',
         # Maintain the x-y ratio so the plot is a semicircle regardless of screen size
         # Setting range from xaxis doesn't seem to allow below [-2, 2], but setting yaxis works...
@@ -243,12 +229,12 @@ if __name__ == '__main__':
         shapes=plot_edges + foreshadowing_edges)
 
     if args.add_spoiler_free_plot:
-        print('Plotting the spoiler-free figure with Plotly...', flush=True)
+        print('    Plotting the spoiler-free figure with Plotly...', flush=True)
 
         spoiler_free_fig = go.Figure(data=[node_trace] + legend_traces,
                                      layout=fig_layout)
 
-        no_spoilers_filename = args.show_data_module + '_no_spoilers_continuity_graph'
+        no_spoilers_filename = show_data_module + '_no_spoilers_continuity_graph'
         if not args.publish:
             plotly.offline.plot(spoiler_free_fig, filename=no_spoilers_filename + '.html',
                                 show_link=False, auto_open=True)
@@ -260,16 +246,37 @@ if __name__ == '__main__':
     node_trace.hoverinfo = 'text'
     node_trace.hoverlabel = dict(align='left')
     node_trace.hovertext = tuple(mouseover_texts)
-    # Modify the helper text for the spoiler version to mention the node mouseovers
-    fig_layout.annotations[0]['text'] = "Hover over nodes to see details."
+    # Add some helper text to the spoiler version mentioning the existence of mouseover info
+    fig_layout.annotations = [
+        dict(text="Hover over nodes/edges to see details.",
+             showarrow=False,
+             xref="paper", yref="paper",
+             x=1.0, y=1.0)
+    ]
 
     fig = go.Figure(data=[node_trace, plot_mouseovers, foreshadowing_mouseovers] + legend_traces,
                     layout=fig_layout)
 
-    filename = args.show_data_module + '_continuity_graph'
+    filename = show_data_module + '_continuity_graph'
     if not args.publish:
         plotly.offline.plot(fig, filename=filename + '.html', show_link=False, auto_open=True)
     else:
         chart_studio.plotly.plot(fig, filename=filename, sharing='public')
 
-    print('Done.')
+    print('    Done.')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(dest='show_data_modules', nargs='+', type=str,
+                        help="The python module(s) to import show data from.")
+    parser.add_argument('--add-spoiler-free-plot', action='store_true', default=False,
+                        dest="add_spoiler_free_plot",
+                        help="Additionally create a plot with no mouseover text" \
+                             + " (episode titles / connection descriptions)")
+    parser.add_argument('--publish', action='store_true', dest="publish", default=False,
+                        help="Publicly publish the plot to the preset plotly profile.")
+    args = parser.parse_args()
+
+    for show_module in args.show_data_modules:
+        plot_show_continuity(show_module, args)
