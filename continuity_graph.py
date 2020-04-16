@@ -8,15 +8,19 @@
 #   https://github.com/plotly/plotly.js/issues/98
 # - link of some sort on clicking on an episode node - e.g. that episode's wikia page?
 
-print('Loading libraries...', flush=True)
-
 import argparse
+import copy
 import math
-import numpy as np
+from pathlib import Path
 
-import chart_studio # Stable as of 1.0.0
+import chart_studio  # Stable as of 1.0.0
 import plotly
-import plotly.graph_objs as go # Stable as of 4.1.1
+import plotly.graph_objs as go  # Stable as of 4.1.1
+
+import shows
+
+OUTPUT_DIR = 'output'
+
 
 def linear_positions(N):
     '''Return an iterable of n positions (tuples) forming a line on the x-axis. First and
@@ -24,11 +28,11 @@ def linear_positions(N):
     '''
     # Edge case to avoid dividing by 0
     if N == 1:
-        yield (-1.0, 0.0)
+        yield -1.0, 0.0
     else:
         for i in range(N):
             # Lay them out left-to-right from -1 to 1
-            yield (-1 + i * 2 / (N - 1), 0)
+            yield -1 + i * 2 / (N - 1), 0
 
 
 def get_episode_node_dict(episodes):
@@ -48,14 +52,29 @@ def get_episode_node_dict(episodes):
     return episode_node_dict
 
 
-def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
+def get_continuity_edges(node_mouseover_texts, node_posns, ep_node_dict, data,
                          line, curve_height_factor=1,
-                         to_text=None, from_text=None):
-    '''Create a list of edges for a single kind of continuity. Update the given list of mouseover
-    texts accordingly.
-    Also return a list of mouseover traces for each edge
+                         from_text=None, to_text=None):
+    '''Return a tuple including:
+    * A list of edges (plotly Shapes) for a single kind of continuity, and
+    * a Scatter trace of edge mouseover nodes (on midpoint of each edge)
+    Also update the given list of episode node mouseover texts, based on the edges added to each node.
+    Params:
+        node_mouseover_texts: List of node mouseover texts to update
+        node_posns: List of node posns
+        ep_node_dict: Dict mapping episode numbers to their node positions
+        data: Iterable of edge data, containing tuples of (from_ep, to_ep, descr) or (from_ep, to_ep, level, descr)
+        line: Dict optionally specifying standard edge properties (width, color, etc.)
+        curve_height_factor: Factor controlling average height of the edge curves above the episode nodes. Negative to
+                             draw edges below the episode nodes instead.
+        from_text: Optional format string for the mouseover text to be added to the 'from' episode node.
+                   {from_ep} and {to_ep} will be replaced with respective episode numbers.
+                   Default None.
+        to_text: Optional format string for the mouseover text to be added to the 'to' episode node.
+                 {from_ep} and {to_ep} will be replaced with respective episode numbers.
+                 Default None.
     '''
-    default_curve_height_factor = 0.5 # Arbitrarily chosen for aesthetics
+    default_curve_height_factor = 0.5  # Arbitrarily chosen for aesthetics
     curve_height_factor *= default_curve_height_factor
 
     edges = []
@@ -64,7 +83,12 @@ def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
     edge_mouseover_points_y = []
     edge_mouseover_texts = []
 
-    for from_ep, to_ep, description in data:
+    for datum in data:
+        if len(datum) == 3:
+            from_ep, to_ep, description = datum
+            level = None
+        else:
+            from_ep, to_ep, level, description = datum
         if from_ep not in ep_node_dict:
             print(f'Warning: Skipping data for unknown episode {repr(from_ep)}')
             continue
@@ -82,10 +106,13 @@ def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
                                ((y1 + y2) / 2) + (curve_height_factor * euclidean_dist))
 
         # Add the edge
+        edge_line = copy.copy(line)
+        if level is not None:
+            edge_line['width'] *= level / 2  # Scale width based on continuity 'level' with 2 being default size
         edges.append(go.layout.Shape(
                 type="path",
                 path=f"M {x1},{y1} Q {curve_control_point[0]},{curve_control_point[1]} {x2},{y2}",
-                line=line))
+                line=edge_line))
 
         # Add a mouseover point/text to the edge. Default to the from_text if both provided
         if from_text is not None or to_text is not None:
@@ -100,17 +127,22 @@ def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
 
         # Add mouseover text to the 'to' nodes
         if to_text is not None:
-            mouseover_texts[ep_node_dict[to_ep]] += \
+            node_mouseover_texts[ep_node_dict[to_ep]] += \
                 '<br>' + to_text.format(from_ep=from_ep) + f'; {description}'
 
     # Add mouseover text to the 'from' nodes (in a separate loop so incoming continuity is listed
     # before outgoing continuity within a given episode)
     if from_text is not None:
-        for from_ep, to_ep, description in data:
+        for datum in data:
+            if len(datum) == 3:
+                from_ep, to_ep, description = datum
+            else:
+                from_ep, to_ep, _, description = datum
+
             if from_ep not in ep_node_dict or to_ep not in ep_node_dict:
                 continue
 
-            mouseover_texts[ep_node_dict[from_ep]] += \
+            node_mouseover_texts[ep_node_dict[from_ep]] += \
                 '<br>' + from_text.format(to_ep=to_ep) + f'; {description}'
 
     # Create the edge mouseover nodes from the collected data
@@ -124,20 +156,17 @@ def get_continuity_edges(mouseover_texts, node_posns, ep_node_dict, data,
             mode='markers',
             marker=dict(
                 color=line['color'],
-                opacity=0,
+                opacity=0.5,
                 size=1.5,
-                line=dict(width=0)), # The thickness of the node's border line
+                line=dict(width=0)),  # The thickness of the node's border line
             visible=True)
 
     return edges, mouseovers_trace
 
 
-def plot_show_continuity(show_data_module, args):
+def plot_show_continuity(show, args, base_file_name):
     '''Generate an html file graphing continuity in the given show, and open it when done.
     '''
-    # Import show data from the given module
-    show = __import__(show_data_module)
-
     print(f'Creating continuity plot for {show.title}...')
 
     # Add nodes for episodes to the networkx graph
@@ -178,29 +207,37 @@ def plot_show_continuity(show_data_module, args):
                        for ep_num, ep_title in show.episodes.items()]
 
     print('    Adding edges...', flush=True)
+    edge_traces = []
+    mouseover_traces = []
     legend_traces = []
 
-    plot_line=dict(color='black', width=0.5)
+    # Plot threads
+    plot_line = dict(color='black', width=0.5)
     plot_edges, plot_mouseovers = get_continuity_edges(
             mouseover_texts, node_posns, ep_node_dict,
-            show.plot_threads,
+            data=show.plot_threads,
             line=plot_line,
-            curve_height_factor=1, # above the episode nodes
+            curve_height_factor=1,  # above the episode nodes
             to_text='Continues plot of ep {from_ep}')
+    edge_traces.extend(plot_edges)
+    mouseover_traces.append(plot_mouseovers)
     # Add a dummy line trace to create a corresponding legend item (plotly Shapes don't legendify)
     legend_traces.append(go.Scatter(x=(None,), y=(None,), mode='lines', hoverinfo='none',
                                    name='Plot Threads',
                                    line=plot_line,
                                    visible=True))
 
-    foreshadowing_line=dict(color='blue', width=0.5)
+    # Foreshadowing
+    foreshadowing_line = dict(color='blue', width=0.375)
     foreshadowing_edges, foreshadowing_mouseovers = get_continuity_edges(
             mouseover_texts, node_posns, ep_node_dict,
-            show.foreshadowing,
+            data=show.foreshadowing,
             line=foreshadowing_line,
-            curve_height_factor=-1, # below the episode nodes
-            to_text='Foreshadowed by ep {from_ep}',
-            from_text='Foreshadows ep {to_ep}')
+            curve_height_factor=-1,  # below the episode nodes
+            from_text='Foreshadows ep {to_ep}',
+            to_text='Foreshadowed by ep {from_ep}')
+    edge_traces.extend(foreshadowing_edges)
+    mouseover_traces.append(foreshadowing_mouseovers)
     # Add a dummy line trace to create a corresponding legend item (plotly Shapes don't legendify)
     legend_traces.append(go.Scatter(x=(None,), y=(None,), mode='lines', hoverinfo='none',
                                    name='Foreshadowing',
@@ -226,7 +263,7 @@ def plot_show_continuity(show_data_module, args):
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False,
                    scaleanchor='x', scaleratio=1, range=[-0.5, 0.5]),
-        shapes=plot_edges + foreshadowing_edges)
+        shapes=edge_traces)
 
     if args.add_spoiler_free_plot:
         print('    Plotting the spoiler-free figure with Plotly...', flush=True)
@@ -234,12 +271,12 @@ def plot_show_continuity(show_data_module, args):
         spoiler_free_fig = go.Figure(data=[node_trace] + legend_traces,
                                      layout=fig_layout)
 
-        no_spoilers_filename = show_data_module + '_no_spoilers_continuity_graph'
+        no_spoilers_plot_name = base_file_name + '_no_spoilers_continuity_graph'
         if not args.publish:
-            plotly.offline.plot(spoiler_free_fig, filename=no_spoilers_filename + '.html',
+            plotly.offline.plot(spoiler_free_fig, filename=str(Path(OUTPUT_DIR) / (no_spoilers_plot_name + '.html')),
                                 show_link=False, auto_open=True)
         else:
-            chart_studio.plotly.plot(spoiler_free_fig, filename=no_spoilers_filename, sharing='public')
+            chart_studio.plotly.plot(spoiler_free_fig, filename=no_spoilers_plot_name, sharing='public')
 
     # Add the node mouseover data now that we're done with the spoiler-free plot
     # Add node mouseover text to the node trace, now that we're done updating them with edge data
@@ -254,29 +291,36 @@ def plot_show_continuity(show_data_module, args):
              x=1.0, y=1.0)
     ]
 
-    fig = go.Figure(data=[node_trace, plot_mouseovers, foreshadowing_mouseovers] + legend_traces,
+    fig = go.Figure(data=[node_trace] + mouseover_traces + legend_traces,
                     layout=fig_layout)
 
-    filename = show_data_module + '_continuity_graph'
+    plot_name = base_file_name + '_continuity_graph'
     if not args.publish:
-        plotly.offline.plot(fig, filename=filename + '.html', show_link=False, auto_open=True)
+        plotly.offline.plot(fig, filename=str(Path(OUTPUT_DIR) / (plot_name + '.html')), show_link=False, auto_open=True)
     else:
-        chart_studio.plotly.plot(fig, filename=filename, sharing='public')
+        chart_studio.plotly.plot(fig, filename=plot_name, sharing='public')
 
     print('    Done.')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument(dest='show_data_modules', nargs='+', type=str,
+    parser.add_argument(dest='show_data_modules', nargs='*', type=str,
+                        default=shows.__all__,
                         help="The python module(s) to import show data from.")
     parser.add_argument('--add-spoiler-free-plot', action='store_true', default=False,
                         dest="add_spoiler_free_plot",
-                        help="Additionally create a plot with no mouseover text" \
+                        help="Additionally create a plot with no mouseover text"
                              + " (episode titles / connection descriptions)")
     parser.add_argument('--publish', action='store_true', dest="publish", default=False,
                         help="Publicly publish the plot to the preset plotly profile.")
     args = parser.parse_args()
 
-    for show_module in args.show_data_modules:
-        plot_show_continuity(show_module, args)
+    # Create the output directory if it does not exist
+    (Path(__file__).parent / OUTPUT_DIR).mkdir(exist_ok=True)
+
+    for show_module_name in args.show_data_modules:
+        # Import show data from the given module
+        show = __import__(f'shows.{show_module_name}', fromlist=[f'show']).show
+
+        plot_show_continuity(show, args, base_file_name=show_module_name)
