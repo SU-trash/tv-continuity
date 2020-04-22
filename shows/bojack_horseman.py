@@ -7,6 +7,7 @@ from show_continuity import *
 
 show = Show(
     title='Bojack Horseman',
+    brief_title='Bojack',
     seasons={1: dict(start=1, end=12, color='#006600'),
              'Special': dict(start=13, end=13, color='#CCCCCC'),
              2: dict(start=14, end=25, color='#005B9C'),

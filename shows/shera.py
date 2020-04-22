@@ -7,6 +7,7 @@ from show_continuity import *
 
 # Parsed from https://en.wikipedia.org/wiki/List_of_She-Ra:_Princess_of_Power_episodes
 show = Show(title='She-Ra and the Princesses of Power',
+            brief_title='She-Ra',
             seasons={1: dict(start=1, end=13, color='#512129'),
                      2: dict(start=14, end=20, color='#000000'),
                      3: dict(start=21, end=26, color='#AC0017'),

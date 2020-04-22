@@ -169,7 +169,7 @@ def plot_show_continuity(show, args, base_file_name):
     '''
     print(f'Creating continuity plot for {show.title}...')
 
-    # Add nodes for episodes to the networkx graph
+    # Add nodes for episodes to the graph
     print('    Adding episode nodes...', flush=True)
 
     node_trace = go.Scatter(x=(), y=(),
@@ -179,10 +179,10 @@ def plot_show_continuity(show, args, base_file_name):
         marker=dict(
             color=[],
             size=5,
-            line=dict(width=1)), # The thickness of the node's border line
+            line=dict(width=1)),  # The thickness of the node's border line
         visible=True)
 
-    # Get the node posns arranged arranged in a semicircle
+    # Get the node posns arranged in a horizontal line
     node_posns = tuple(linear_positions(len(show.episodes)))
     node_trace['x'], node_trace['y'] = zip(*node_posns)
 
@@ -303,6 +303,74 @@ def plot_show_continuity(show, args, base_file_name):
     print('    Done.')
 
 
+def plot_show_serialities(shows):
+    if not shows:
+        raise Exception("No shows specified")
+
+    '''Plot an [Episodic <--> Serial] line chart with labelled nodes for all given shows.'''
+    # Plot a line from 0 to 1
+    line_trace = go.Scatter(x=(0, 1), y=(0, 0), mode='lines',  # (0,0) to (1, 0)
+                            line=dict(width=0.5, color='black'),
+                            hoverinfo='none',
+                            visible=True)
+
+    # Add labelled markers to the ends of the line
+    line_ends_trace = go.Scatter(x=(0, 1), y=(0, 0),
+                                 text=('Episodic', 'Serial'),
+                                 hoverinfo='none',
+                                 mode='markers+text',
+                                 textposition=("middle left", "middle right"),
+                                 textfont=dict(size=18),
+                                 marker=dict(
+                                     symbol='line-ns',
+                                     color=[],
+                                     size=5,
+                                     line=dict(width=1)),
+                                 visible=True)
+
+    # Add nodes for each show
+    # TODO: Should really move to matplotlib since it probably isn't missing basic frickin features like
+    #       angled text on markers. Annotations can be angled but they don't respect pan/zoom.
+    data = [(s.seriality_score(), f'{s.brief_title}: {100 * s.seriality_score():.1f}%') for s in shows]
+    # Sort the shows by seriality so we can alternate their text positions above vs below the line
+    # Avoids most text overlap conflicts
+    data.sort(key=lambda s: s[0])
+    seriality_scores, titles = zip(*data) # Note: inverse zip assignment breaks if data is empty
+    nodes_trace = go.Scatter(x=tuple(seriality_scores),
+                             y=tuple(0 for _ in shows),
+                             text=tuple(titles),
+                             hoverinfo='none',
+                             mode='markers+text',
+                             textposition=((len(shows) // 2) * ("top center", "bottom center")
+                                           + (len(shows) % 2) * ("top center",)),
+                             marker=dict(
+                                 color=[],
+                                 size=5,
+                                 line=dict(width=1)),  # The thickness of the node's border line
+                             visible=True)
+
+    # Prepare the figure layout for the plot
+    fig_layout = go.Layout(
+        title=dict(text=f"<br><b>Show Serialities</b>",
+                   font=dict(color='black', size=16), x=0.5),
+        showlegend=False,
+        # If hovermode is set to 'closest', it picks any node close enough to the mouse's position
+        # If set to e.g. 'x', picks the node (any distance away) which is closest to the mouse's x
+        # position.
+        hovermode='closest',
+        dragmode='pan',  # Default mouse mode
+        margin=dict(b=5, l=5, r=5, t=40, pad=0),
+        plot_bgcolor='white',
+        xaxis=dict(showgrid=True, zeroline=True, showticklabels=False),
+        yaxis=dict(showgrid=True, zeroline=True, showticklabels=False),
+        shapes=[])
+
+    fig = go.Figure(data=[line_trace, line_ends_trace, nodes_trace], layout=fig_layout)
+
+    plot_name = 'show_serialities_chart'
+    plotly.offline.plot(fig, filename=str(Path(OUTPUT_DIR) / (plot_name + '.html')), show_link=False, auto_open=True)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(dest='show_data_modules', nargs='*', type=str,
@@ -324,3 +392,6 @@ if __name__ == '__main__':
         show = __import__(f'shows.{show_module_name}', fromlist=[f'show']).show
 
         plot_show_continuity(show, args, base_file_name=show_module_name)
+
+    plot_show_serialities([__import__(f'shows.{show_module_name}', fromlist=[f'show']).show
+                           for show_module_name in args.show_data_modules])

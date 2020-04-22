@@ -53,9 +53,9 @@ import shows
 #       being friends, this would be lvl 1 as the two characters being friends has become part of the show's
 #       'baseline canon'.
 #       For this category it perhaps doesn't make sense to have a line from 'X and Y become friends' to every episode
-#       afterward in which they are shown being friends...
+#       afterward in which they are shown being friends... or else have them but make them very faint
 #       On the other hand e.g. Amity's introduction might merit starting a lvl 2 arc line following episodes in which
-#       she has 'notable' character development or her relationship with Luz.
+#       she has 'notable' character development or her relationship with Luz changes.
 #       This is perhaps what I was intending with 'lvl 1 referential'...
 
 
@@ -88,6 +88,13 @@ class Show:
     plot_threads: list = field(default_factory=list)
     foreshadowing: list = field(default_factory=list)
     callbacks: list = field(default_factory=list)
+    # A more compact title not guaranteed to be unique
+    brief_title: str = None
+
+    def __post_init__(self):
+        # This seems to be the only way to default to another field without abandoning @dataclass
+        if self.brief_title is None:
+            self.brief_title = self.title
 
     @classmethod
     def from_wikipedia(cls, title):
@@ -240,7 +247,7 @@ class Show:
             print(f"{indent * ' '}Most foreshadowed: Episode {ep_num}: {self.episodes[ep_num]}; foreshadowed {foreshadowed_count} times")
 
     def print_continuity_stats(self):
-        print(f'{self.title} Continuity Statistics:')
+        print(f'{self.brief_title} Continuity Statistics:')
         self.print_plot_stats(indent=4)
         print()
         if self.foreshadowing:
