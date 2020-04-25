@@ -81,6 +81,9 @@ class Foreshadowing(IntEnum):
 class Show:
     '''Data on a TV show and its continuity.'''
     title: str
+    # Dict containing the number of episodes per season
+    # it is assumed that all episodes listed have aired in seasonal order (i.e. if S2 has any episodes, S1 must not
+    # have less than its listed number of episodes)
     seasons: dict
     # Dict of episode numbers and titles. Double-length episodes are instead indexed with a string
     # containing all the episode numbers they take up, formatted as either "1-3" or "1/2"
@@ -88,7 +91,7 @@ class Show:
     plot_threads: list = field(default_factory=list)
     foreshadowing: list = field(default_factory=list)
     callbacks: list = field(default_factory=list)
-    # A more compact title not guaranteed to be unique
+    # A more compact title. Should also be unique so it can safely be used for file names
     brief_title: str = None
 
     def __post_init__(self):
@@ -98,6 +101,7 @@ class Show:
 
     @classmethod
     def from_wikipedia(cls, title):
+        # TODO: Read title from page
         page = wikipedia.page(f'List of {title} episodes')
         tables = pd.read_html(page.html())
         seasons = {}
@@ -107,29 +111,38 @@ class Show:
 
         for table in tables:
             # Parse Seasons table
-            if 'Season' in table.keys():
-                cur_ep_num = 1
-                for season_id, num_episodes in zip(table['Season'], table['Episodes']):
-                    print(type(season_id))
-                    # Store as int if possible
-                    if isinstance(season_id, str) and season_id.isdigit():
-                        season_id = int(season_id)
-
-                    num_episodes = int(num_episodes)
-
-                    seasons[season_id] = dict(from_ep=cur_ep_num, to_ep=cur_ep_num + num_episodes - 1,
-                                              color='#000000')
-                    cur_ep_num += num_episodes
+            # if 'Season' in table.keys():
+            #     cur_ep_num = 1
+            #     for season_id, num_episodes in zip(table['Season'], table['Episodes']):
+            #         # Store as int if possible
+            #         if isinstance(season_id, str) and season_id.isdigit():
+            #             season_id = int(season_id)
+            #
+            #         num_episodes = int(num_episodes)
+            #
+            #         seasons[season_id] = dict(from_ep=cur_ep_num, to_ep=cur_ep_num + num_episodes - 1,
+            #                                   color='#000000')
+            #         cur_ep_num += num_episodes
 
             # Parse episode titles from each season's table
-            if 'No.overall' in table.keys() and any(' date' in k.lower() for k in table.keys()):
-                # Get the air or release date column name
+            if ('No.overall' in table.keys()
+                    and any(' date' in k.lower() for k in table.keys())
+                    and any('title' in k.lower() for k in table.keys())):
+                # Get a couple column names agnostically of variations in their formats (or of the presence
+                # of hyperlinks)
                 release_date_key = next(k for k in table.keys() if ' date' in k.lower())
+                title_key = next(k for k in table.keys() if 'title' in k.lower())
 
                 for ep_num, ep_title, release_date_str in zip(table['No.overall'],
-                                                              table['Title'],
+                                                              table[title_key],
                                                               table[release_date_key]):
+                    # Strip any hyperlinks appended to each field
+                    ep_num = str(ep_num).split('[')[0]
+                    ep_title = ep_title.split('[')[0]  # TODO: This one's a bit dangerous maybe?
+                    release_date_str = release_date_str.split('[')[0]
+
                     # Ignore un-aired episodes ('release date' in future or is 'TBA' or some such)
+                    # This also filters out tables that have the episode description as every cell of the row
                     release_date = dateparser.parse(release_date_str)
                     if release_date is None or release_date > today:
                         continue
@@ -139,13 +152,17 @@ class Show:
                     if '.' in str(ep_num):
                         continue
 
-                    assert int(ep_num) not in episodes
+                    # Convert to int when possible
+                    if isinstance(ep_num, str) and ep_num.isdigit():
+                        ep_num = int(ep_num)
 
-                    # Strip title quotes and reformat if an episode has multiple possible titles
+                    assert ep_num not in episodes
+
+                    # Strip any title quotes and reformat if an episode has multiple possible titles
                     ep_title = ep_title.strip('"')
                     ep_title.replace('""', ' / ')
 
-                    episodes[int(ep_num)] = ep_title
+                    episodes[ep_num] = ep_title
 
         return cls(title=title, seasons=seasons, episodes=episodes)
 
@@ -180,7 +197,9 @@ class Show:
 
     def seriality_score(self):
         '''Return a metric from 0 to 1, where 0 is fully episodic and 1 is fully serial. Currently:
-        (1 + sum_over_all_episodes(0.9 * has_forward_conn + 0.1 * has_backward_conn)) / num_episodes
+        (1 * show_has_any_conn
+         + sum_over_all_episodes(0.9 * has_forward_conn + 0.1 * has_backward_conn))
+         / num_episodes
         Somewhat subjectively weighted (0.9 : 0.1) toward 'converging' story branches being more serial than
         'diverging' story branches.
         This metric was chosen for satisfying all of the following 'nice'/'intuitive' properties:
@@ -199,6 +218,10 @@ class Show:
         .<:>. = ._._._.  (plot-spawned branches worth as much as serial if they converge again)
         .<.>. = ._._.    (alternate paths between already-causally-connected episodes do not change the score)
         '''
+        # This is a bit hacky but ensures shows with no (cross-episode) plot threads return a score of 0
+        if not any(e[0] != e[1] for e in self.plot_threads):
+            return 0
+
         # Weight attributed to episodes that causally affect a future episode
         # 0.5 would be symmetric between causal and caused episodes (e.g. F(.<:) = F(:>.))
         causal_weight = 0.9
@@ -206,13 +229,9 @@ class Show:
         causal_eps = set()
         caused_eps = set()
 
-        for plot_thread in self.plot_threads:
-            if len(plot_thread) == 3:
-                from_ep, to_ep, _ = plot_thread
-            else:
-                from_ep, to_ep, level, _ = plot_thread
-                if level < Plot.CAUSAL:
-                    continue
+        for from_ep, to_ep, level, _ in self.plot_threads:
+            if level < Plot.CAUSAL:
+                continue
 
             causal_eps.add(from_ep)
             caused_eps.add(to_ep)
@@ -236,18 +255,28 @@ class Show:
                 major_foreshadowing_eps.add(from_ep)
                 major_foreshadowed_eps.add(to_ep)
 
-        print(f"{indent * ' '}{100 * (len(foreshadowing_eps) / len(self.episodes)):.1f}% of episodes foreshadow a future episode")
-        print(f"{indent * ' '}{100 * (len(major_foreshadowing_eps) / len(self.episodes)):.1f}% of episodes have major foreshadowing for a future episode")
+        print(f"{indent * ' '}{100 * (len(foreshadowing_eps) / len(self.episodes)):.1f}%"
+              + " of episodes foreshadow a future episode")
+        print(f"{indent * ' '}{100 * (len(major_foreshadowing_eps) / len(self.episodes)):.1f}%"
+              + " of episodes have major foreshadowing for a future episode")
         print()
 
-        print(f"{indent * ' '}{100 * (len(foreshadowed_eps) / len(self.episodes)):.1f}% of episodes are foreshadowed by a past episode")
-        print(f"{indent * ' '}{100 * (len(major_foreshadowed_eps) / len(self.episodes)):.1f}% of episodes have a major story element foreshadowed by a past episode")
+        print(f"{indent * ' '}{100 * (len(foreshadowed_eps) / len(self.episodes)):.1f}%" +
+              " of episodes are foreshadowed by a past episode")
+        print(f"{indent * ' '}{100 * (len(major_foreshadowed_eps) / len(self.episodes)):.1f}%"
+              + " of episodes have a major story element foreshadowed by a past episode")
         if self.foreshadowing:
             ep_num, foreshadowed_count = foreshadowed_eps.most_common(1)[0]
-            print(f"{indent * ' '}Most foreshadowed: Episode {ep_num}: {self.episodes[ep_num]}; foreshadowed {foreshadowed_count} times")
+            print(f"{indent * ' '}Most foreshadowed: Episode {ep_num}: {self.episodes[ep_num]}" +
+                  f"; foreshadowed {foreshadowed_count} times")
 
     def print_continuity_stats(self):
         print(f'{self.brief_title} Continuity Statistics:')
+
+        if len(self.episodes) <= 1:
+            print("    THERE IS AS YET INSUFFICIENT DATA FOR A MEANINGFUL ANSWER.")
+            return
+
         self.print_plot_stats(indent=4)
         print()
         if self.foreshadowing:

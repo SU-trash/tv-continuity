@@ -52,8 +52,8 @@ episodes = {
 
 # Season colors also set to match Wikipedia
 # (Section colors from https://en.wikipedia.org/wiki/List_of_Gravity_Falls_episodes)
-seasons = {1: dict(start=1, end=20, color='#19D39B'),
-           2: dict(start=21, end=40, color='#49C9FF')}
+seasons = {1: dict(num_eps=20, color='#19D39B'),
+           2: dict(num_eps=20, color='#49C9FF')}
 
 # Episodes that logically 'follow' each other directly in the plot
 plot_threads = [
@@ -64,6 +64,7 @@ plot_threads = [
     (19, 20, Plot.SERIAL, r'''Gideon arc'''),
     (22, 24, Plot.CAUSAL, r'''Bunker laptop'''),
     (9, 28, Plot.CAUSAL, r'''Blendin's revenge'''),
+    (23, 30, Plot.CAUSAL, r'''Pacifica / Pines' relationship arc'''),
     (20, 31, Plot.CAUSAL, r'''Portal machine arc'''),
     (31, 32, Plot.CAUSAL, r'''The Stans' story'''),
     (27, 40, Plot.CAUSAL, r'''The memory erasing gun'''),
@@ -101,6 +102,7 @@ foreshadowing = [
     (17, 37, Foreshadowing.MAJOR, r'''"the apocalypse is coming soon"; Weirdmageddon'''),
     (19, 31, Foreshadowing.MAJOR, r'''Pair of swings in Stan's memory, one broken; The two Stans'''),
     (19, 31, Foreshadowing.MAJOR, r'''Ford in background of wrestling memory; The two Stans'''),
+    (20, 27, Foreshadowing.MINOR, r'''Cryptogram: SEARCH FOR THE BLINDEYE'''),
     (20, 32, Foreshadowing.MAJOR, r'''Rainbow prism reflection in Author flashback; Author lived in M. Shack'''),
     (22, 30, Foreshadowing.MINOR, r'''Threatened "last form you'll ever take" matches Dipper's pose when turned to wood'''),
     (22, 31, Foreshadowing.MAJOR, r'''"That six-fingered nerd hasn't been the same in 30 years"; The two Stans'''),

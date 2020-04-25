@@ -9,11 +9,11 @@ title = 'Steven Universe'
 
 # Season colors also set to match Wikipedia
 # (Section colors from https://en.wikipedia.org/wiki/List_of_Steven_Universe_episodes)
-seasons = {1: dict(start=1, end=52, color='#FF5E6D'),
-           2: dict(start=53, end=78, color='#91ECDD'),
-           3: dict(start=79, end=103, color='#B895D1'),
-           4: dict(start=104, end=128, color='#A12766'),
-           5: dict(start=129, end=160, color='#ACDF7D')}
+seasons = {1: dict(num_eps=52, color='#FF5E6D'),
+           2: dict(num_eps=26, color='#91ECDD'),
+           3: dict(num_eps=24, color='#B895D1'),
+           4: dict(num_eps=24, color='#A12766'),
+           5: dict(num_eps=28, color='#ACDF7D')}
 
 # Dict of episode numbers and titles. Double-length episodes are instead indexed with a string
 # containing the episode numbers they take up, separated by a forward slash (/), or with a
@@ -320,7 +320,7 @@ foreshadowing = [
     (4, 19, Foreshadowing.MAJOR, r'''Glimpse of Rose's Room'''),
     (4, 52, Foreshadowing.MAJOR, r'''Garnet has two door lights; Garnet fusion'''),
     (6, 9, Foreshadowing.MINOR, r'''Amethyst shapeshifts briefly into Purple Puma'''),
-    (7, 157, Foreshadowing.MINOR, r'''Temple statue (Obsidian)'s sword visible in ocean'''),  # Repeat from 26 not counted
+    (7, '157-160', Foreshadowing.MINOR, r'''Temple statue (Obsidian)'s sword visible in ocean'''),  # Repeat from 26 not counted
     (8, 40, Foreshadowing.MAJOR, r'''"This was once a gem battlefield"; Gem rebellion'''),
     (8, 76, Foreshadowing.MAJOR, r'''Rose vs diamonds mural; Existence of diamond authority'''),
     (9, 146, Foreshadowing.MAJOR, r'''"that's why we're all here... to be wild and free... and make up nicknames"; RQ=PD'''),

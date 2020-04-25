@@ -8,7 +8,7 @@ from show_continuity import Show, Plot
 show = Show(
     title='The Owl House',
     brief_title='Owl House',
-    seasons={1: dict(start=1, end=10, color='#FADA5E')},
+    seasons={1: dict(num_eps=20, color='#FADA5E')},
     episodes={
         1: 'A Lying Witch and a Warden',
         2: 'Witches Before Wizards',

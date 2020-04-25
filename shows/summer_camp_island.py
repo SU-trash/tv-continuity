@@ -7,7 +7,7 @@ from show_continuity import *
 
 show = Show(
     title='Summer Camp Island',
-    seasons={1: dict(start=1, end=40, color='#E698D0')},
+    seasons={1: dict(num_eps=40, color='#E698D0')},
     episodes={
         1: 'The First Day',
         2: 'Monster Babies',
