@@ -19,7 +19,8 @@ show = Show(
         7: 'Lost in Language',
         8: 'Once Upon a Swap',
         9: 'Something Ventured, Someone Framed',
-        10: 'Escape of the Palisman'})
+        10: 'Escape of the Palisman',
+        11: 'Adventures in the Elements'})
 
 show.plot_threads = [
     (3, 5, Plot.CAUSAL, "Luz and Amity's relationship development"),
@@ -29,4 +30,6 @@ show.plot_threads = [
     (5, 7, Plot.CAUSAL, "Luz and Amity's relationship development"),
     (5, 8, Plot.REFERENTIAL, "Eda & Lilith / Emperor's Coven"),
     (6, 10, Plot.CAUSAL, "Eda's Curse"),
-    (7, 10, Plot.REFERENTIAL, "The Bat Queen and her children")]
+    (7, 10, Plot.REFERENTIAL, "The Bat Queen and her children"),
+    (7, 11, Plot.REFERENTIAL, "Luz/Amity's friendship, Emira & Edric making up for the library incident"),
+    (9, 11, Plot.CAUSAL, "Luz preparing to go to Hexside")]
