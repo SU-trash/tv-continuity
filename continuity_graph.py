@@ -325,6 +325,8 @@ if __name__ == '__main__':
                              + " (episode titles / connection descriptions)")
     parser.add_argument('--publish', action='store_true', dest="publish", default=False,
                         help="Publicly publish the plot to the preset plotly profile.")
+    parser.add_argument('--serialities', action='store_true', default=False,
+                        help="Plot the given shows' seriality scores on a line.")
     args = parser.parse_args()
 
     # Create the output directory if it does not exist
@@ -333,9 +335,10 @@ if __name__ == '__main__':
     shows = [__import__(f'shows.{show_module_name}', fromlist=[f'show']).show
              for show_module_name in args.show_data_modules]
 
-    print(f'Creating seriality plot...')
-    plot_show_serialities(show for show in shows if show.episodes)
-
-    for show in shows:
-        print(f'Creating continuity plot for {show.title}...')
-        plot_show_continuity(show, args)
+    if args.serialities:
+        print(f'Creating seriality plot...')
+        plot_show_serialities(show for show in shows if show.episodes)
+    else:
+        for show in shows:
+            print(f'Creating continuity plot for {show.title}...')
+            plot_show_continuity(show, args)
