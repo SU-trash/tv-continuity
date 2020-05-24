@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from show_continuity import Show, Plot
+from show_continuity import *
 
 '''Continuity data on the show The Owl House.'''
 

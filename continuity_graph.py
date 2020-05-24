@@ -1,13 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# TODO: Priority List:
-# - Hide or fade to background edges that don't touch the node currently being hovered over
-#   Dash app allows this but is fairly heavy, code and performance-wise
-# - Clean up spaghetti code when plotly finally allows Shapes in the legend:
-#   https://github.com/plotly/plotly.js/issues/98
-# - link of some sort on clicking on an episode node - e.g. that episode's wikia page?
-
 import argparse
 import copy
 import math
@@ -24,7 +17,7 @@ OUTPUT_DIR = 'output'
 
 
 def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
-                         line, curve_height_factor=1,
+                         line, curve_height_factor=1, flatten_adjacent=False,
                          from_text=None, to_text=None):
     '''Return a tuple including:
     * A list of edges (plotly Shapes) for a single kind of continuity, and
@@ -38,6 +31,7 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
         line: Dict optionally specifying standard edge properties (width, color, etc.)
         curve_height_factor: Factor controlling average height of the edge curves above the episode nodes. Negative to
                              draw edges below the episode nodes instead.
+        flatten_adjacent: If True, connect adjacent episodes via a horizontal line instead of a Bezier curve.
         from_text: Optional format string for the mouseover text to be added to the 'from' episode node.
                    {from_ep} and {to_ep} will be replaced with respective episode numbers.
                    Default None.
@@ -65,11 +59,19 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
         x1, y1 = ep_to_posn[from_ep]
         x2, y2 = ep_to_posn[to_ep]
         euclidean_dist = math.hypot(x2 - x1, y2 - y1)
-        # Calculate the Bezier curve's control point
-        # As a rough experiment start with a scaling amount below the midpoint (should actually be
-        # perpendicular away from a connecting the two nodes but whatever for now)
-        curve_control_point = ((x1 + x2) / 2,
-                               ((y1 + y2) / 2) + (curve_height_factor * euclidean_dist))
+
+        if flatten_adjacent and ep_to_idx[to_ep] - ep_to_idx[from_ep] == 1:
+            # Connect adjacent episodes by a horizontal line
+            curve_control_point = ((x1 + x2) / 2, ((y1 + y2) / 2))
+        else:
+            # Calculate the Bezier curve's control point
+            # As a rough experiment start with a scaling amount below the midpoint (should actually be
+            # perpendicular away from the line connecting the two nodes but we're doing horizontal nodes for now)
+            # TODO: Still need to decide how I want to visualize time travel. May end up putting them below the episodes
+            #       whereas normal data will be above the episodes, in which case multiply height factor by -1 here
+            #       If that's the case will need to separate out the foreshadowing graph though
+            curve_control_point = ((x1 + x2) / 2,
+                                   ((y1 + y2) / 2) + (curve_height_factor * euclidean_dist))
 
         # Add the edge
         edge_line = copy.copy(line)
@@ -142,7 +144,7 @@ def plot_show_continuity(show, args):
                             marker=dict(
                                 color=[],
                                 size=5,
-                                line=dict(width=1)),  # The thickness of the node's border line
+                                line=dict(width=0.5)),  # The thickness of the node's border line
                             visible=True)
 
     # Color nodes by season
@@ -171,6 +173,7 @@ def plot_show_continuity(show, args):
                 edge_data=show.plot_threads,
                 line=plot_line,
                 curve_height_factor=1,  # above the episode nodes
+                flatten_adjacent=True,
                 to_text='Continues plot of ep {from_ep}')
         edge_traces.extend(plot_edges)
         mouseover_traces.append(plot_mouseovers)
@@ -188,6 +191,7 @@ def plot_show_continuity(show, args):
                 edge_data=show.foreshadowing,
                 line=foreshadowing_line,
                 curve_height_factor=-1,  # below the episode nodes
+                flatten_adjacent=False,
                 from_text='Foreshadows ep {to_ep}',
                 to_text='Foreshadowed by ep {from_ep}')
         edge_traces.extend(foreshadowing_edges)
