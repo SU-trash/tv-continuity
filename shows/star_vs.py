@@ -173,7 +173,7 @@ show.plot_threads = [
     ('8a', 27, Plot.CAUSAL, "Blood Moon curse"),
     ('22a', 27, Plot.CAUSAL, "Star's crush on Marco"),
     ('20b', 27, Plot.CAUSAL, "Ludo's plan to steal the spellbook"),
-    #('25a', ?, Plot.CAUSAL, "Moon and Toffee's history"),
+    ('25a', '36b', Plot.REFERENTIAL, "Moon and Toffee's history"),
     (27, '28a', Plot.CAUSAL, "Rescuing Glossaryck"),
     (13, '29a', Plot.CAUSAL, "Star's broken wand"),
     (27, '29a', Plot.CAUSAL, "Lost spellbook"),
@@ -283,13 +283,11 @@ show.plot_threads = [
     ('75a', '75b', Plot.SERIAL, "Battle vs. Mina - Eclipsa's dilemma"),
     ('75b', '76a', Plot.SERIAL, "Battle vs. Mina - Eclipsa's surrender"),
     ('76a', '76b', Plot.SERIAL, "Battle vs. Mina - Retreat from Mewni"),
-    ('76b', 77, Plot.SERIAL, "Star destroying magic"),
-
-]
+    ('76b', 77, Plot.SERIAL, "Star destroying magic")]
 
 show.foreshadowing = [
-    #('25a', '?', Foreshadowing.MAJOR, "Queen Eclipsa")  # Is this foreshadowing or plot?
-    #('25a', '?',
-    #('26a', '?', Foreshadowing.MAJOR, "Queen Eclipsa")
+    ('8b', 13, Foreshadowing.MAJOR, '''Fortune cookie: "A great evil has been unleashed."; Toffee as a 'bigger bad\''''),
+    ('8a', '25a', Foreshadowing.MAJOR, '''"you're not the first monster to fall victim to their magic"; Toffee/Moon's history'''),
     (10, 48, Foreshadowing.MAJOR, "Miss Heinous' cheek marks; Miss Heinous is Meteora Butterfly"),
+    ('11a', 13, Foreshadowing.MAJOR, '''"Sometimes your biggest threat is right under your nose."; Toffee's coup'''),
 ]
