@@ -157,8 +157,8 @@ def plot_show_continuity(show, args):
 
     # Create mouseover text for each node. We'll update the mouseover text for each episode based
     # on its edge connections
-    mouseover_texts = [f'<b>Ep {ep_num}: {ep_title}</b>'
-                       for ep_num, ep_title in show.episodes.items()]
+    mouseover_texts = [f'<b>Ep {ep_id}: {ep_title}</b>'
+                       for ep_id, ep_title in show.episodes.items()]
 
     # Add edges
     edge_traces = []
@@ -255,64 +255,59 @@ def plot_show_continuity(show, args):
 
 def plot_show_serialities(shows):
     '''Plot an [Episodic <--> Serial] line chart with labelled nodes for all given shows.'''
-    # Plot a line from 0 to 1
-    line_trace = go.Scatter(x=(0, 1), y=(0, 0), mode='lines',  # (0,0) to (1, 0)
+    # Plot a vertical line from 0 to 1
+    line_trace = go.Scatter(x=(0, 0), y=(0, 1), mode='lines',  # (0,0) to (1, 0)
                             line=dict(width=0.5, color='black'),
-                            hoverinfo='none',
-                            visible=True)
+                            hoverinfo='none')
 
     # Add labelled markers to the ends of the line
-    line_ends_trace = go.Scatter(x=(0, 1), y=(0, 0),
+    line_ends_trace = go.Scatter(x=(0, 0), y=(0, 1),
                                  text=('Episodic', 'Serial'),
                                  hoverinfo='none',
                                  mode='markers+text',
-                                 textposition=("middle left", "middle right"),
+                                 textposition=("bottom center", "top center"),
                                  textfont=dict(size=18),
                                  marker=dict(
-                                     symbol='line-ns',
+                                     symbol='line-ew',
                                      color=[],
                                      size=5,
-                                     line=dict(width=1)),
-                                 visible=True)
+                                     line=dict(width=1)))
 
-    # Add nodes for each show
-    # TODO: Should really move to matplotlib since it probably isn't missing basic frickin features like
-    #       angled text on markers. Annotations can be angled but they don't respect pan/zoom.
-    data = [(s.seriality_score(), f'{s.brief_title}: {100 * s.seriality_score():.1f}%') for s in shows]
-    # Sort the shows by seriality so we can alternate their text positions above vs below the line
-    # Avoids most text overlap conflicts
-    data.sort(key=lambda s: s[0])
-    seriality_scores, labels = zip(*data) if data else ((), ())  # Inverse zip assignment breaks if data is empty
-    nodes_trace = go.Scatter(x=seriality_scores,
-                             y=tuple(0 for _ in data),
-                             text=labels,
+    # Add a node for each show (with title on the right)
+    shows_data = [(s.seriality_score(), s.brief_title) for s in shows]
+    scores, titles = zip(*shows_data) if shows_data else ((), ())  # Inverse zip assignment breaks if data is empty
+    nodes_trace = go.Scatter(x=tuple(0 for _ in scores),
+                             y=scores,
+                             text=titles,
                              hoverinfo='none',
                              mode='markers+text',
-                             textposition=((len(data) // 2) * ("top center", "bottom center")
-                                           + (len(data) % 2) * ("top center",)),
+                             textposition='middle right',
                              marker=dict(
-                                 color=[],
+                                 color='black',
                                  size=5,
-                                 line=dict(width=1)),  # The thickness of the node's border line
-                             visible=True)
+                                 line=dict(width=1)))  # The thickness of the node's border line
+
+    # Add labels of the seriality percentages on the left
+    percentage_labels_trace = go.Scatter(
+        x=tuple(0 for _ in scores),
+        y=scores,
+        text=tuple(f'{100 * score:.1f}% ' for score in scores),
+        hoverinfo='none',
+        mode='text',
+        textposition='middle left')
 
     # Prepare the figure layout for the plot
     fig_layout = go.Layout(
         title=dict(text=f"<br><b>Show Serialities</b>",
                    font=dict(color='black', size=16), x=0.5),
         showlegend=False,
-        # If hovermode is set to 'closest', it picks any node close enough to the mouse's position
-        # If set to e.g. 'x', picks the node (any distance away) which is closest to the mouse's x
-        # position.
-        hovermode='closest',
         dragmode='pan',  # Default mouse mode
         margin=dict(b=5, l=5, r=5, t=40, pad=0),
         plot_bgcolor='white',
         xaxis=dict(showgrid=True, zeroline=True, showticklabels=False),
-        yaxis=dict(showgrid=True, zeroline=True, showticklabels=False),
-        shapes=[])
+        yaxis=dict(showgrid=True, zeroline=True, showticklabels=False))
 
-    fig = go.Figure(data=[line_trace, line_ends_trace, nodes_trace], layout=fig_layout)
+    fig = go.Figure(data=[line_trace, line_ends_trace, nodes_trace, percentage_labels_trace], layout=fig_layout)
 
     plot_name = 'show_serialities_chart'
     plotly.offline.plot(fig, filename=str(Path(OUTPUT_DIR) / (plot_name + '.html')), show_link=False, auto_open=True)
