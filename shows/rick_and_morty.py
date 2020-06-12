@@ -1,0 +1,70 @@
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from show_continuity import *
+
+'''Continuity data on the show Rick and Morty.'''
+
+show = Show(
+    title='Rick and Morty',
+    seasons={1: dict(num_eps=11, color='#804060'),
+             2: dict(num_eps=10, color='#804060'),
+             3: dict(num_eps=10, color='#804060'),
+             4: dict(num_eps=10, color='#804060')},
+    episodes={
+        1: 'Pilot',
+        2: 'Lawnmower Dog',
+        3: 'Anatomy Park',
+        4: 'M. Night Shaym-Aliens!',
+        5: 'Meeseeks and Destroy',
+        6: 'Rick Potion #9',
+        7: 'Raising Gazorpazorp',
+        8: 'Rixty Minutes',
+        9: 'Something Ricked This Way Comes',
+        10: 'Close Rick-counters of the Rick Kind',
+        11: 'Ricksy Business',
+        12: 'A Rickle in Time',
+        13: 'Mortynight Run',
+        14: 'Auto Erotic Assimilation',
+        15: 'Total Rickall',
+        16: 'Get Schwifty',
+        17: 'The Ricks Must Be Crazy',
+        18: 'Big Trouble in Little Sanchez',
+        19: 'Interdimensional Cable 2: Tempting Fate',
+        20: "Look Who's Purging Now",
+        21: 'The Wedding Squanchers',
+        22: 'The Rickshank Rickdemption',
+        23: 'Rickmancing the Stone',
+        24: 'Pickle Rick',
+        25: 'Vindicators 3: The Return of Worldender',
+        26: 'The Whirly Dirly Conspiracy',
+        27: 'Rest and Ricklaxation',
+        28: 'The Ricklantis Mixup',
+        29: "Morty's Mind Blowers",
+        30: "The ABC's of Beth",
+        31: 'The Rickchurian Mortydate',
+        32: 'Edge of Tomorty: Rick Die Rickpeat',
+        33: 'The Old Man and the Seat',
+        34: "One Crew over the Crewcoo's Morty",
+        35: "Claw and Hoarder: Special Ricktim's Morty",
+        36: 'Rattlestar Ricklactica',
+        37: 'Never Ricking Morty',
+        38: 'Promortyus',
+        39: 'The Vat of Acid Episode',
+        40: 'Childrick of Mort'})
+
+show.plot_threads = [
+    (6, 8, Plot.REFERENTIAL, r'''Rick and Morty's bodies in the backyard'''),
+    (11, 12, Plot.CAUSAL, r'''Unfreezing time after the party cleanup'''),
+    (11, 21, Plot.CAUSAL, r'''Tammy/Bird Person's relationship'''),
+    (21, 22, Plot.CAUSAL, r'''Rick in the galactic prison / Tammy and Bird-person'''),
+    (22, 23, Plot.CAUSAL, r'''Beth/Jerry's divorce'''),
+    (22, 26, Plot.CAUSAL, r'''Jerry's worsening self-esteem post-divorce'''),
+    (10, 28, Plot.CAUSAL, r'''Evil Morty's schemes'''),
+    (22, 30, Plot.CAUSAL, r'''Jerry dating after the divorce'''),
+    (30, 31, Plot.CAUSAL, r'''Beth worrying about whether she's a clone'''),
+    (22, 31, Plot.CAUSAL, r'''Beth/Jerry's divorce'''),
+    (10, 37, Plot.REFERENTIAL, r'''Evil Morty'''),
+    (22, 40, Plot.CAUSAL, "Tammy and Bird Person"),
+    (24, 40, Plot.REFERENTIAL, "The family therapy sessions"),
+    (30, 40, Plot.CAUSAL, "Beth's clone")]
