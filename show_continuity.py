@@ -311,6 +311,47 @@ class Show:
 
         return total_causality / len(included_eps)
 
+    def branching_factor(self, season=None):
+        '''Return a score from representing how much the show's plot branches, indicating the avg number of branches
+        entering every caused episode. Uncaused episodes are ignored.
+        E.g. In a 2 ep show, the score is 0 if it is episodic, 1 if it is serial, and 2+ if there are 2+ plot branches
+        leading from the first episode to the second (or vice-versa).
+        '''
+        if season is not None:
+            assert season in self.seasons
+
+            known_eps = set()  # Episodes to include plot threads to/from (E.g. Seasons 1-3)
+            included_eps = set()  # Episodes to calculate the branching factor of (E.g. Season 3)
+
+            eps_list = list(self.episodes.keys())  # For ease of referencing by index
+            cur_ep_idx = 0
+            for cur_season, cur_season_dict in self.seasons.items():
+                next_ep_idx = cur_ep_idx + cur_season_dict['num_eps']
+                cur_season_eps = eps_list[cur_ep_idx:next_ep_idx]
+                known_eps.update(cur_season_eps)
+
+                if cur_season == season:
+                    included_eps.update(cur_season_eps)
+                    break
+
+                cur_ep_idx = next_ep_idx
+        else:
+            known_eps = self.episodes.keys()
+            included_eps = self.episodes.keys()
+
+        # Filter down to the plot threads that are causal to any episodes we are measuring
+        included_plot_threads = tuple((from_ep, to_ep) for from_ep, to_ep, level, _ in self.plot_threads
+                                      if level >= Plot.CAUSAL  # Ignore referential plot threads
+                                      and (from_ep in known_eps and to_ep in included_eps))
+
+        caused_eps = set(to_ep for _, to_ep in included_plot_threads
+                         if to_ep in included_eps)
+
+        if not caused_eps:
+            return 0
+        else:
+            return len(included_plot_threads) / len(caused_eps)
+
     def print_plot_stats(self, indent=0):
         '''Print statistics on the plot threads present in the show. Currently a single summary statistic indicating
         the percent of seriality (as opposed to episodicity) in the show. See seriality_score().
@@ -322,6 +363,11 @@ class Show:
         print(f'{indent * " "}Overall: {100 * self.seriality_score():.1f}%')
         for season in self.seasons.keys():
             print(f'{indent * " "}Season {repr(season)}: {100 * self.seriality_score(season=season):.1f}%')
+
+        print(f'\n{indent * " "}Plot Branching Factor:')
+        print(f'{indent * " "}Overall: {self.branching_factor():.2f}')
+        for season in self.seasons.keys():
+            print(f'{indent * " "}Season {repr(season)}: {self.branching_factor(season=season):.2f}')
 
     def print_foreshadowing_stats(self, season=None, indent=0):
         '''Args:

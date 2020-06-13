@@ -12,12 +12,13 @@ import plotly.graph_objs as go  # Stable as of 4.1.1
 from slugify import slugify
 
 import shows
+from show_continuity import Plot
 
 OUTPUT_DIR = 'output'
 
 
 def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
-                         line, curve_height_factor=1, flatten_adjacent=False,
+                         edge_line, curve_height_factor=1, flatten_adjacent=False,
                          from_text=None, to_text=None):
     '''Return a tuple including:
     * A list of edges (plotly Shapes) for a single kind of continuity, and
@@ -28,7 +29,7 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
         node_posns: List of node posns
         ep_node_dict: Dict mapping episode numbers to their node positions
         edge_data: Iterable containing tuples of (from_ep, to_ep, description) or (from_ep, to_ep, level, description)
-        line: Dict optionally specifying standard edge properties (width, color, etc.)
+        edge_line: Dict optionally specifying standard edge properties (width, color, etc.)
         curve_height_factor: Factor controlling average height of the edge curves above the episode nodes. Negative to
                              draw edges below the episode nodes instead.
         flatten_adjacent: If True, connect adjacent episodes via a horizontal line instead of a Bezier curve.
@@ -74,9 +75,6 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
                                    ((y1 + y2) / 2) + (curve_height_factor * euclidean_dist))
 
         # Add the edge
-        edge_line = copy.copy(line)
-        if level is not None:
-            edge_line['width'] *= level / 2  # Scale width based on continuity 'level' with 2 being default size
         edges.append(go.layout.Shape(
                 type="path",
                 path=f"M {x1},{y1} Q {curve_control_point[0]},{curve_control_point[1]} {x2},{y2}",
@@ -118,7 +116,7 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
             showlegend=False,
             mode='markers',
             marker=dict(
-                color=line['color'],
+                color=edge_line['color'],
                 opacity=0.5,
                 size=1.5,
                 line=dict(width=0)),  # The thickness of the node's border line
@@ -165,23 +163,40 @@ def plot_show_continuity(show, args):
     mouseover_traces = []
     legend_traces = []
 
-    if show.plot_threads:
-        plot_line = dict(color='black', width=0.5)
-        plot_edges, plot_mouseovers = get_continuity_edges(
-                node_mouseover_texts=mouseover_texts,
-                ep_to_posn=ep_to_posn, ep_to_idx=ep_to_idx,
-                edge_data=show.plot_threads,
-                line=plot_line,
-                curve_height_factor=1,  # above the episode nodes
-                flatten_adjacent=True,
-                to_text='Continues plot of ep {from_ep}')
-        edge_traces.extend(plot_edges)
-        mouseover_traces.append(plot_mouseovers)
-        # Add a dummy line trace to create a corresponding legend item (plotly Shapes don't legendify)
-        legend_traces.append(go.Scatter(x=(None,), y=(None,), mode='lines', hoverinfo='none',
-                                       name='Plot Threads',
-                                       line=plot_line,
-                                       visible=True))
+    # Filter out referential vs causal vs serial plot threads
+    referential_threads, causal_threads, serial_threads = [], [], []
+    for plot_thread in show.plot_threads:
+        if plot_thread[2] == Plot.REFERENTIAL:
+            referential_threads.append(plot_thread)
+        elif plot_thread[2] == Plot.CAUSAL:
+            causal_threads.append(plot_thread)
+        elif plot_thread[2] == Plot.SERIAL:
+            serial_threads.append(plot_thread)
+
+    # Note: Order here determines order of appearance in mouseover text
+    for plot_threads, edge_line, to_text in ((serial_threads, dict(color='black', width=1), 'Continues ep {from_ep}'),
+                                             (causal_threads, dict(color='black', width=0.5), 'Caused by ep {from_ep}'),
+                                             (referential_threads, dict(color='black', width=0.25), 'References ep {from_ep}')):
+        if plot_threads:
+            line = dict(color='black', width=0.5)
+            plot_edges, plot_mouseovers = get_continuity_edges(
+                    node_mouseover_texts=mouseover_texts,
+                    ep_to_posn=ep_to_posn, ep_to_idx=ep_to_idx,
+                    edge_data=plot_threads,
+                    edge_line=edge_line,
+                    flatten_adjacent=True,
+                    to_text=to_text)
+            edge_traces.extend(plot_edges)
+            mouseover_traces.append(plot_mouseovers)
+
+    # Add a dummy line trace to create a corresponding legend item (plotly Shapes don't legendify)
+    # I could legendify each of serial, causal, and referential, but the appearances get kind of messed up whenever
+    # there are multiple plot threads between 2 episodes, so it could end up more misleading than letting users infer
+    # the 'importance'.
+    legend_traces.append(go.Scatter(x=(None,), y=(None,), mode='lines', hoverinfo='none',
+                                   name='Plot Threads',
+                                   line=dict(color='black', width=0.5),
+                                   visible=True))
 
     if show.foreshadowing:
         foreshadowing_line = dict(color='blue', width=0.375)
@@ -189,7 +204,7 @@ def plot_show_continuity(show, args):
                 node_mouseover_texts=mouseover_texts,
                 ep_to_posn=ep_to_posn, ep_to_idx=ep_to_idx,
                 edge_data=show.foreshadowing,
-                line=foreshadowing_line,
+                edge_line=foreshadowing_line,
                 curve_height_factor=-1,  # below the episode nodes
                 flatten_adjacent=False,
                 from_text='Foreshadows ep {to_ep}',
@@ -239,8 +254,7 @@ def plot_show_continuity(show, args):
             dict(text="Hover over nodes/edges to see details.",
                  showarrow=False,
                  xref="paper", yref="paper",
-                 x=1.0, y=1.0)
-        ]
+                 x=1.0, y=1.0)]
 
         fig_traces = [node_trace] + mouseover_traces + legend_traces
 
