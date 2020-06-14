@@ -29,7 +29,7 @@ show.plot_threads = [
     (4, 5, Plot.REFERENTIAL, "Luz' light spell"),
     (4, 5, Plot.REFERENTIAL, "Eda's curse"),
     (4, 6, Plot.CAUSAL, "Eda's curse"),
-    (5, 7, Plot.CAUSAL, "Luz and Amity's relationship development"),
+    (5, 7, Plot.CAUSAL, "Luz/Amity relationship development"),
     (5, 8, Plot.REFERENTIAL, "Eda and Lilith / Emperor's Coven"),
     (3, 9, Plot.CAUSAL, "Luz wanting to enrol in Hexside / heightened Hexside security"),
     (4, 10, Plot.CAUSAL, "Eda's Curse"),

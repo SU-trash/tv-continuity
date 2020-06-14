@@ -56,8 +56,9 @@ show = Show(
 show.plot_threads = [
     (6, 8, Plot.REFERENTIAL, r'''Rick and Morty's bodies in the backyard'''),
     (11, 12, Plot.CAUSAL, r'''Unfreezing time after the party cleanup'''),
-    (11, 21, Plot.CAUSAL, r'''Tammy/Bird Person's relationship'''),
-    (21, 22, Plot.CAUSAL, r'''Rick in the galactic prison / Tammy and Bird-person'''),
+    (11, 21, Plot.CAUSAL, r'''Tammy/Bird-Person's relationship'''),
+    (21, 22, Plot.SERIAL, "Rick in the galactic prison"),
+    (21, 22, Plot.CAUSAL, "Tammy having killed Bird-Person"),
     (22, 23, Plot.CAUSAL, r'''Beth/Jerry's divorce'''),
     (22, 26, Plot.CAUSAL, r'''Jerry's worsening self-esteem post-divorce'''),
     (10, 28, Plot.CAUSAL, r'''Evil Morty's schemes'''),
@@ -65,6 +66,6 @@ show.plot_threads = [
     (30, 31, Plot.CAUSAL, r'''Beth worrying about whether she's a clone'''),
     (22, 31, Plot.CAUSAL, r'''Beth/Jerry's divorce'''),
     (10, 37, Plot.REFERENTIAL, r'''Evil Morty'''),
-    (22, 40, Plot.CAUSAL, "Tammy and Bird Person"),
+    (22, 40, Plot.CAUSAL, "Tammy and Bird-Person"),
     (24, 40, Plot.REFERENTIAL, "The family therapy sessions"),
     (30, 40, Plot.CAUSAL, "Beth's clone")]

@@ -53,12 +53,12 @@ show = Show(
 show.plot_threads = [
     (3, 14, Plot.REFERENTIAL, r'''Moon friendship bracelet'''),
     (20, 21, Plot.CAUSAL, r'''Ramona & Susie's past'''),
-    (22, 27, Plot.REFERENTIAL, r'''Oscar/HH's Radio show'''),  # TODO: Should this be included?
+    (22, 27, Plot.REFERENTIAL, r'''Oscar/HH's Radio show'''),
     (30, 31, Plot.REFERENTIAL, r'''HH casts a spell'''),
     (18, 32, Plot.REFERENTIAL, r'''HH being a werewolf'''),
     (21, 34, Plot.CAUSAL, r'''Ramona & Susie's past'''),
     (20, 36, Plot.REFERENTIAL, r'''Ramona'''),
     (32, 37, Plot.REFERENTIAL, r'''Barb'''),
-    (30, 39, Plot.SERIAL, r'''HH learning to be a witch'''),
-    (35, 39, Plot.SERIAL, r'''HH's crush on Max'''),
+    (30, 39, Plot.CAUSAL, r'''HH learning to be a witch'''),
+    (35, 39, Plot.CAUSAL, r'''HH's crush on Max'''),
     (39, 40, Plot.REFERENTIAL, r'''HH learning magic''')]

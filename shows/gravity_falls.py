@@ -60,11 +60,11 @@ plot_threads = [
     (1, 4, Plot.CAUSAL, r'''Mystery of the Journals arc'''),
     (4, 11, Plot.CAUSAL, r'''Gideon arc'''),
     (11, 19, Plot.CAUSAL, r'''Gideon arc'''),  # Is his mention of the M. Shack being important enough to say its causal to 19?
-    (1, 20, Plot.CAUSAL, r'''Stan / Vending machine door'''),
+    (1, 20, Plot.CAUSAL, r'''Mystery of Stan and the vending machine door'''),
     (19, 20, Plot.SERIAL, r'''Gideon arc'''),
     (22, 24, Plot.CAUSAL, r'''Bunker laptop'''),
     (9, 28, Plot.CAUSAL, r'''Blendin's revenge'''),
-    (23, 30, Plot.CAUSAL, r'''Pacifica / Pines' relationship arc'''),
+    (23, 30, Plot.CAUSAL, r'''Pacifica/Pines' relationship arc'''),
     (20, 31, Plot.CAUSAL, r'''Portal machine arc'''),
     (31, 32, Plot.CAUSAL, r'''The Stans' story'''),
     (27, 40, Plot.CAUSAL, r'''The memory erasing gun'''),

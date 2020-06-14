@@ -26,11 +26,10 @@ show.plot_threads = [
     (2, 3, Plot.CAUSAL, "Searching for Adelaide"),
     (1, 4, Plot.REFERENTIAL, "The Beast and the Woodsman"),
     (2, 4, Plot.CAUSAL, "Searching for Adelaide"),
-    (2, 5, Plot.CAUSAL, "Searching for Adelaide / Beatrice's backstory"),
+    (2, 5, Plot.CAUSAL, "Searching for Adelaide"),
+    (5, 2, Plot.CAUSAL, "Beatrice's backstory"),
     (5, 6, Plot.CAUSAL, "Catching the ferry"),
     (6, 8, Plot.CAUSAL, "Beatrice's return"),
     (8, 9, Plot.CAUSAL, "Rescuing Greg"),
     (4, 10, Plot.CAUSAL, "The Beast's lies"),
     (9, 10, Plot.CAUSAL, "Rescuing Greg")]
-
-show.foreshadowing = []

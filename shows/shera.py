@@ -108,7 +108,7 @@ show.plot_threads = [
     (23, 24, Plot.SERIAL, r'''Adora captured'''),
     (24, 25, Plot.SERIAL, r'''The portal'''),
     (25, 26, Plot.SERIAL, r'''The portal'''),
-    (26, 27, Plot.CAUSAL, r'''Loss of Angela / Glimmer's coronation'''),
+    (26, 27, Plot.CAUSAL, r'''Loss of Angela / Glimmer becoming the new queen'''),
     (24, 27, Plot.CAUSAL, r'''Catra's lie about Entrapta'''),
     (26, 27, Plot.CAUSAL, r'''Hordak/Catra blame for portal catastrophe'''),
     (22, 28, Plot.CAUSAL, r'''Mara's ship'''),
@@ -124,11 +124,11 @@ show.plot_threads = [
     (32, 34, Plot.CAUSAL, r'''Scorpia leaving the Horde'''),
     (33, 34, Plot.CAUSAL, r'''Mermista despondent over the loss of her kingdom'''),
     (23, 35, Plot.CAUSAL, r'''Mystery of Mara's past'''),
-    (32, 36, Plot.SERIAL, r'''Scorpia joining the Rebellion'''),
+    (32, 36, Plot.SERIAL, r'''Scorpia leaving the Horde to join the Rebellion'''),
     (35, 36, Plot.SERIAL, r'''Heart of Etheria arc'''),
     (36, 37, Plot.SERIAL, r'''Entrapta rescue mission'''),
     (33, 38, Plot.CAUSAL, r'''Double Trouble switching sides'''),
-    (36, 38, Plot.CAUSAL, r'''Scorpia joining the Rebellion'''),  # Referential? Scorpia helping the rebellion kind of enters the canon arguably
+    (36, 38, Plot.CAUSAL, r'''Scorpia having joined the Rebellion'''),
     (37, 38, Plot.SERIAL, r'''Entrapta rescue mission, Heart of Etheria arc'''),
     (24, 39, Plot.CAUSAL, r'''The portal signal; Horde Prime's arrival'''),  # Might technically not have mattered?
     (31, 39, Plot.CAUSAL, r'''Mara/Light Hope's relationship'''),
@@ -152,5 +152,4 @@ show.plot_threads = [
     (49, 50, Plot.CAUSAL, r'''Discovery of the failsafe'''),
     (50, 51, Plot.SERIAL, r'''Failsafe/Heart of Etheria arc'''),
     (50, 52, Plot.CAUSAL, r'''Hordak having regained his memories'''),
-    (51, 52, Plot.SERIAL, r'''Failsafe/Heart of Etheria arc''')
-]
+    (51, 52, Plot.SERIAL, r'''Failsafe/Heart of Etheria arc''')]

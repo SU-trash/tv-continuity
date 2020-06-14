@@ -186,12 +186,11 @@ show.plot_threads = [
     ('31b', 34, Plot.CAUSAL, "Toffee-possessed Ludo's plans"),
     ('33b', 34, Plot.CAUSAL, "Star's crush on Marco"),
     (34, 35, Plot.SERIAL, "Toffee's plans, Marco asking Star about her crush"),
-    (35, '36a', Plot.SERIAL, "Marco coping with Star leaving / aftermath of battle - star/moon/high commission,"),
+    (35, '36a', Plot.SERIAL, "Marco coping with Star leaving"),
+    (35, '36a', Plot.SERIAL, "The High Commission incapacitated by Toffee-Ludo"),
     ('36a', '36b', Plot.SERIAL, "Moon/Toffee's history"),
-    # I'm leaning away from flashback episodes having backward causal effects since otherwise the order
-    # of events causes the loop to close; I feel only actual time travel should result in backward edges)
-    #('36b', '12b'/'8b', Plot.SERIAL, "Toffee's revenge"),
-    (35, '37a', Plot.CAUSAL, "Aftermath of battle - Ludo"),
+    ('36b', '8b', Plot.SERIAL, "Toffee seeking revenge on Moon"),
+    (35, '37a', Plot.CAUSAL, "Aftermath of battle - Ludo and the wand"),
     ('37a', '37b', Plot.CAUSAL, "Ludo's plans to take over Mewni"),
     ('36a', '38a', Plot.CAUSAL, "Sanctuary being unusable"),
     ('37b', '38b', Plot.SERIAL, "Ludo's reign"),
@@ -205,14 +204,14 @@ show.plot_threads = [
     (34, '41a', Plot.CAUSAL, "Tom's reaction to the revelation on Song Day"),
     (39, '41b', Plot.CAUSAL, "Eclipsa freed"),
     (27, '42b', Plot.REFERENTIAL, "Jackie/Marco's relationship"),
-    ('40a', '42b', Plot.CAUSAL, "Marco's return to Earth / inability to settle back in'"),
+    ('40a', '42b', Plot.CAUSAL, "Marco's return to Earth and inability to settle back in'"),
     ('40a', '43a', Plot.REFERENTIAL, "The Knight of the Wash"),
     ('42b', '43a', Plot.CAUSAL, "Marco's return to Mewni"),
-    ('43a', '43b', Plot.CAUSAL, "Marco as Star's squire"),  # Referential?
+    ('43a', '43b', Plot.CAUSAL, "Marco as Star's squire"),
     (10, '44a', Plot.CAUSAL, "Marco's facade as Princess Turdina"),
     (39, '45a', Plot.CAUSAL, "Voice calling Star (later revealed to be the unicorn she created when defeating Toffee"),
     (35, '45b', Plot.CAUSAL, "Marco's feelings about Star"),
-    ('42a', '45b', Plot.CAUSAL, "Star/Tom's relationship"),  # Referential?
+    ('42a', '45b', Plot.CAUSAL, "Star/Tom's relationship"),
     ('44b', '46a', Plot.CAUSAL, "Star trying to reconcile Monsters/Mewmans"),
     ('29b', '47a', Plot.REFERENTIAL, "Marco's life in Hekapoo's dimension"),  # Causal?
     ('40b', '47a', Plot.REFERENTIAL, "Glossaryck's mental state"),
@@ -261,7 +260,7 @@ show.plot_threads = [
     (57, '65b', Plot.CAUSAL, "Eclipsa's reign"),
     ('61a', '65b', Plot.CAUSAL, "The Yada Yada berries culprit"),
     ('61b', '65b', Plot.CAUSAL, "Moon/River's community"),
-    ('52a', '66a', Plot.CAUSAL, "Buff Frog's departure, Monster/Mewmans' relationship"),
+    ('52a', '66a', Plot.CAUSAL, "Buff Frog's having left Mewni"),
     (56, '66b', Plot.REFERENTIAL, "Baby Meteora"),
     ('66b', '1a', Plot.REFERENTIAL, "Glossaryck time travelling to give original Mewman settlers a magic wand"),
     ('66b', '49a', Plot.REFERENTIAL, "Glossaryck time travelling to create Stump Day"),
@@ -274,7 +273,8 @@ show.plot_threads = [
     (56, '72b', Plot.REFERENTIAL, "Baby Meteora"),
     ('71a', '72b', Plot.REFERENTIAL, "Mariposa"),
     ('71a', '73a', Plot.CAUSAL, "Tom's trip, Tom/Star's relationship"),
-    ('73a', '73b', Plot.SERIAL, "Trying to reach Mewni, Marco/Star/Tom love triangle"),
+    ('73a', '73b', Plot.SERIAL, "Trying to reach Mewni"),
+    ('73a', '73b', Plot.CAUSAL, "Marco/Star/Tom love triangle"),
     ('73b', '74a', Plot.SERIAL, "Trying to reach Mewni"),
     ('65b', '74b', Plot.CAUSAL, "Mina's plot"),
     ('74a', '74b', Plot.SERIAL, "Battle vs. Mina"),
@@ -289,5 +289,4 @@ show.foreshadowing = [
     ('8b', 13, Foreshadowing.MAJOR, '''Fortune cookie: "A great evil has been unleashed."; Toffee as a 'bigger bad\''''),
     ('8a', '25a', Foreshadowing.MAJOR, '''"you're not the first monster to fall victim to their magic"; Toffee/Moon's history'''),
     (10, 48, Foreshadowing.MAJOR, "Miss Heinous' cheek marks; Miss Heinous is Meteora Butterfly"),
-    ('11a', 13, Foreshadowing.MAJOR, '''"Sometimes your biggest threat is right under your nose."; Toffee's coup'''),
-]
+    ('11a', 13, Foreshadowing.MAJOR, '''"Sometimes your biggest threat is right under your nose."; Toffee's coup''')]
