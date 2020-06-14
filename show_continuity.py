@@ -14,51 +14,6 @@ import wikipedia
 
 import shows
 
-# - Plot edge thicknesses set based on 'level' of plot continuity
-#   Vague Definitions:
-#     - Lvl 0, Show setting/premise: E.g. Main cast of characters, common locations, etc.
-#               Present across episodes in all shows except anthologies, can be ignored.
-#     - Lvl 0.5, Callback: A previously introduced story element is re-referenced but does not 'affect' the plot. E.g.
-#               recurring joke on a poster in background.
-#     - Lvl 1, Referential: The plot of Ep B is affected by a story element (thing, change in characters' relationship,
-#               skill learned by character, etc.) from ep A but is not 'directly' causally related to it nor is the
-#               conflict focused on it. The element may help resolve the conflict.
-#               Does not include story elements that are part of the 'main premise/setting' of the show, e.g.
-#               main character or common location appearing.
-#               This gets a bit subjective... feels something like how 'simple' it would be to accept the element
-#               as a 'premise', e.g. I can accept 'character X has this superpower' but 'character X is in deep conflict
-#               with Y due to past episode clashes' is not a 'simple premise'.
-#     - Lvl 2, Causal: Ep A 'directly' causally relates to B, BUT the conflict in B is a new conflict that
-#               was not present in A. Episode B's conflict would not exist without A or would be resolved differently
-#               based on a result of A.
-#               I feel like CB -> The Test belongs here, but the moon f. bracelet from SCI is only referential, this is
-#               a bit subjective.
-#     - Also lvl 2? Arc: Maybe same definition as causal?
-#               'Hegehog uses magic she learnt' appearing in an episode would be Referential. I guess for
-#               consistency to 'ongoing mysteries' - tidbits being dropped in otherwise unrelated episodes should be
-#               referential, whereas if the mystery is a 'main focus' of the episode it would be Causal? But then how
-#               can arcs escalate to Serial...
-#     - Also lvl 2, Answer: Ep B answers or partly answers a mystery from ep A.
-#     - Lvl 3, Serial: Ep B addresses a problem created or focused on in A.
-#               E.g. fighting enemies that appeared at the end of A.
-#   So e.g. an episode mainly focusing on Ramona/Susie's past would be Serial, if a tidbit about their past was
-#   referenced that would be Causal/Arc (arc about their relationship), and an episode having Ramona merely appear
-#   would be Referential? (since she's not a character from the show's original cast?)
-#
-# TODO: maybe need an indicator for when an episode changes the show's 'canon', i.e. it can be considered to affect
-#       potentially any future episode involving the element it changed. This would include characters becoming friends,
-#       skills learned, etc., but perhaps not include anything one would consider to be an arc and under plot focus.
-#       For example, if several episodes were about MC attempting to befriend someone, that would be an 'arc' and merit
-#       lvl 2 or above, but if an episode demonstrated two characters becoming friends and future episodes show them
-#       being friends, this would be lvl 1 as the two characters being friends has become part of the show's
-#       'baseline canon'.
-#       For this category it perhaps doesn't make sense to have a line from 'X and Y become friends' to every episode
-#       afterward in which they are shown being friends... or else have them but make them very faint
-#       On the other hand e.g. Amity's introduction might merit starting a lvl 2 arc line following episodes in which
-#       she has 'notable' character development or her relationship with Luz changes.
-#       This is perhaps what I was intending with 'lvl 1 referential'...
-
-
 class Plot(IntEnum):
     '''Enum representing the 'level' of an instance of plot continuity.
     Note: Re-appearance of an introduced character is not considered a plot point. Reuse of characters is considered
@@ -138,7 +93,7 @@ class Show:
         today = datetime.now()
 
         for table in tables:
-            # Parse Seasons table
+            # TODO: Parse Seasons table
             # if 'Season' in table.keys():
             #     if 'Segments' in table.keys:  # Use this instead of Episodes if present
             #     cur_ep_num = 1
@@ -152,8 +107,6 @@ class Show:
             #         seasons[season_id] = dict(from_ep=cur_ep_num, to_ep=cur_ep_num + num_episodes - 1,
             #                                   color='#000000')
             #         cur_ep_num += num_episodes
-
-
 
             # Parse episode titles from each season's table
             if ('No.overall' in table.keys() or 'No.' in table.keys()
