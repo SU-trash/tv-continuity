@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import copy
 import math
 from pathlib import Path
 
@@ -87,9 +86,9 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
             edge_mouseover_points_x.append(curve_midpoint_x)
             edge_mouseover_points_y.append(curve_midpoint_y)
             if from_text is not None:
-                edge_mouseover_texts.append(f'Ep {from_ep} ' + from_text.lower().format(to_ep=to_ep) + f'; {description}')
+                edge_mouseover_texts.append(f'{from_ep} ' + from_text.lower().format(to_ep=to_ep) + f'; {description}')
             elif to_text is not None:
-                edge_mouseover_texts.append(f'Ep {to_ep} ' + to_text.lower().format(from_ep=from_ep) + f'; {description}')
+                edge_mouseover_texts.append(f'{to_ep} ' + to_text.lower().format(from_ep=from_ep) + f'; {description}')
 
         # Add mouseover text to the 'to' nodes
         if to_text is not None:
@@ -155,7 +154,7 @@ def plot_show_continuity(show, args):
 
     # Create mouseover text for each node. We'll update the mouseover text for each episode based
     # on its edge connections
-    mouseover_texts = [f'<b>Ep {ep_id}: {ep_title}</b>'
+    mouseover_texts = [f'<b>{ep_id}: {ep_title}</b>'
                        for ep_id, ep_title in show.episodes.items()]
 
     # Add edges
@@ -174,9 +173,9 @@ def plot_show_continuity(show, args):
             serial_threads.append(plot_thread)
 
     # Note: Order here determines order of appearance in mouseover text
-    for plot_threads, edge_line, to_text in ((serial_threads, dict(color='black', width=1), 'Continues ep {from_ep}'),
-                                             (causal_threads, dict(color='black', width=0.5), 'Caused by ep {from_ep}'),
-                                             (referential_threads, dict(color='black', width=0.25), 'References ep {from_ep}')):
+    for plot_threads, edge_line, to_text in ((serial_threads, dict(color='black', width=1), 'Continues {from_ep}'),
+                                             (causal_threads, dict(color='black', width=0.5), 'Caused by {from_ep}'),
+                                             (referential_threads, dict(color='black', width=0.25), 'References {from_ep}')):
         if plot_threads:
             line = dict(color='black', width=0.5)
             plot_edges, plot_mouseovers = get_continuity_edges(
@@ -207,8 +206,8 @@ def plot_show_continuity(show, args):
                 edge_line=foreshadowing_line,
                 curve_height_factor=-1,  # below the episode nodes
                 flatten_adjacent=False,
-                from_text='Foreshadows ep {to_ep}',
-                to_text='Foreshadowed by ep {from_ep}')
+                from_text='Foreshadows {to_ep}',
+                to_text='Foreshadowed by {from_ep}')
         edge_traces.extend(foreshadowing_edges)
         mouseover_traces.append(foreshadowing_mouseovers)
         # Add a dummy line trace to create a corresponding legend item (plotly Shapes don't legendify)
@@ -345,7 +344,7 @@ if __name__ == '__main__':
     # Create the output directory if it does not exist
     (Path(__file__).parent / OUTPUT_DIR).mkdir(exist_ok=True)
 
-    shows = [__import__(f'shows.{show_module_name}', fromlist=[f'show']).show
+    shows = [__import__(f'shows.{show_module_name}', fromlist=['show']).show
              for show_module_name in args.show_data_modules]
 
     if args.serialities:
