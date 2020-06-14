@@ -45,6 +45,15 @@ This algorithm satisfies the following axioms I considered 'nice' (where each do
 I will also likely be updating this algorithm to something more complex to handle causal loops without
 'over-inflating' the seriality % for episodes that include both plot progression and backstory.
 
+Per-season seriality is calculated as the number of causal episodes in the season, but without counting
+plot threads to future seasons. This results in the average of the per-season serialities tending to
+undercount the total seriality, but gives the nice property that a season's seriality is independent of any
+future seasons. Per-season seriality also foregoes the +1 to the numerator unless it continues any plot thread from
+a prior season (or is the first season), in order to satisfy the somewhat nice property (for e.g. a 2-ep S2):
+
+`S1_. .` = `S1 ._.` = 0.5
+
+
 ### Foreshadowing
 Separated into 'major' and 'minor'. Foreshadowing is considered 'minor' if it foreshadows the
 mere existence of a place/person/object, rather than foreshadowing an event or revelation.
