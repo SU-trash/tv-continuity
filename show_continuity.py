@@ -73,7 +73,6 @@ class Show:
     episodes: dict
     plot_threads: list = field(default_factory=list)
     foreshadowing: list = field(default_factory=list)
-    callbacks: list = field(default_factory=list)
     # A more compact title. Should also be unique so it can safely be used for file names
     brief_title: str = None
 
@@ -170,8 +169,7 @@ class Show:
                        seasons=seasons,
                        episodes=episodes,
                        plot_threads=plot_threads,
-                       foreshadowing=d['foreshadowing'],
-                       callbacks=d['callbacks'])
+                       foreshadowing=d['foreshadowing'])
 
     def json(self):
         '''Return a JSON string of this object.'''
@@ -179,8 +177,7 @@ class Show:
                            'seasons': self.seasons,
                            'episodes': self.episodes,
                            'plot-threads': self.plot_threads,
-                           'foreshadowing': self.foreshadowing,
-                           'callbacks': self.callbacks})
+                           'foreshadowing': self.foreshadowing})
 
     def seriality_score(self, season=None):
         '''Return a metric from 0 to 1, where 0 is fully episodic and 1 is fully serial. Currently:
