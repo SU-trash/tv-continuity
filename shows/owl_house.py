@@ -8,19 +8,20 @@ from show_continuity import *
 show = Show(
     title='The Owl House',
     brief_title='Owl House',
-    seasons={1: dict(num_eps=20, color='#FADA5E')},
-    episodes={
-        'S1E1': 'A Lying Witch and a Warden',
-        'S1E2': 'Witches Before Wizards',
-        'S1E3': 'I Was a Teenage Abomination',
-        'S1E4': 'The Intruder',
-        'S1E5': 'Covention',
-        'S1E6': "Hooty's Moving Hassle",
-        'S1E7': 'Lost in Language',
-        'S1E8': 'Once Upon a Swap',
-        'S1E9': 'Something Ventured, Someone Framed',
-        'S1E10': 'Escape of the Palisman',
-        'S1E11': 'Adventures in the Elements'})
+    seasons={
+        1: {'color': '#FADA5E',
+            'episodes': {
+                'S1E1': 'A Lying Witch and a Warden',
+                'S1E2': 'Witches Before Wizards',
+                'S1E3': 'I Was a Teenage Abomination',
+                'S1E4': 'The Intruder',
+                'S1E5': 'Covention',
+                'S1E6': "Hooty's Moving Hassle",
+                'S1E7': 'Lost in Language',
+                'S1E8': 'Once Upon a Swap',
+                'S1E9': 'Something Ventured, Someone Framed',
+                'S1E10': 'Escape of the Palisman',
+                'S1E11': 'Adventures in the Elements'}}})
 
 show.plot_threads = [
     # Ep 1 is technically causal to every episode of the show but doesn't matter for our seriality metric (by design)

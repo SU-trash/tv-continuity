@@ -128,9 +128,9 @@ def plot_show_continuity(show, args):
     '''Generate an html file graphing continuity in the given show, opening it when done.'''
 
     # Create a dict mapping episode IDs to XY positions on the horizontal axis
-    ep_to_posn = {ep_id: (i, 0) for i, ep_id in enumerate(show.episodes.keys())}
+    ep_to_posn = {ep_id: (i, 0) for i, ep_id in enumerate(show.episodes().keys())}
     # Create a dict mapping episode IDs to their ordered index
-    ep_to_idx = {ep_id: i for i, ep_id in enumerate(show.episodes)}
+    ep_to_idx = {ep_id: i for i, ep_id in enumerate(show.episodes().keys())}
 
     # Create the episode nodes graph object
     node_trace = go.Scatter(x=tuple(p[0] for p in ep_to_posn.values()),
@@ -147,15 +147,13 @@ def plot_show_continuity(show, args):
     # Color nodes by season
     node_colors = []
     for season_info in show.seasons.values():
-        node_colors.extend(min(season_info['num_eps'],
-                               len(ep_to_posn) - len(node_colors))
-                           * [season_info['color']])
+        node_colors.extend(len(season_info['episodes']) * [season_info['color']])
     node_trace['marker']['color'] = tuple(node_colors)
 
     # Create mouseover text for each node. We'll update the mouseover text for each episode based
     # on its edge connections
     mouseover_texts = [f'<b>{ep_id}: {ep_title}</b>'
-                       for ep_id, ep_title in show.episodes.items()]
+                       for ep_id, ep_title in show.episodes().items()]
 
     # Add edges
     edge_traces = []
@@ -349,7 +347,7 @@ if __name__ == '__main__':
 
     if args.serialities:
         print(f'Creating seriality plot...')
-        plot_show_serialities(show for show in shows if show.episodes)
+        plot_show_serialities(show for show in shows if show.episodes())
     else:
         for show in shows:
             print(f'Creating continuity plot for {show.title}...')

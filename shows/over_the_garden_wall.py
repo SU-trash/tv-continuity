@@ -8,18 +8,19 @@ from show_continuity import *
 show = Show(
     title='Over the Garden Wall',
     brief_title='Over the Garden Wall',
-    seasons={1: dict(num_eps=10, color='#804060')},
-    episodes={
-        'S1E1': 'The Old Grist Mill',
-        'S1E2': "Hard Times at the Huskin' Bee",
-        'S1E3': 'Schooltown Follies',
-        'S1E4': 'Songs of the Dark Lantern',
-        'S1E5': 'Mad Love',
-        'S1E6': 'Lullaby in Frogland',
-        'S1E7': 'The Ringing of the Bell',
-        'S1E8': 'Babes in the Wood',
-        'S1E9': 'Into the Unknown',
-        'S1E10': 'The Unknown'})
+    seasons={
+        1: {'color': '#804060',
+            'episodes': {
+                'S1E1': 'The Old Grist Mill',
+                'S1E2': "Hard Times at the Huskin' Bee",
+                'S1E3': 'Schooltown Follies',
+                'S1E4': 'Songs of the Dark Lantern',
+                'S1E5': 'Mad Love',
+                'S1E6': 'Lullaby in Frogland',
+                'S1E7': 'The Ringing of the Bell',
+                'S1E8': 'Babes in the Wood',
+                'S1E9': 'Into the Unknown',
+                'S1E10': 'The Unknown'}}})
 
 show.plot_threads = [
     ('S1E1', 'S1E2', Plot.REFERENTIAL, 'The bluebird'),

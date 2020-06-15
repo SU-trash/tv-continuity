@@ -8,29 +8,31 @@ from show_continuity import *
 show = Show(
     title='Infinity Train',
     # Season colors from https://en.wikipedia.org/wiki/List_of_Infinity_Train_episodes
-    seasons={1: dict(num_eps=10, color='#534DA1'),
-             2: dict(num_eps=10, color='#9A9A75')},
-    episodes={
-        'S1E1': 'The Grid Car',
-        'S1E2': 'The Beach Car',
-        'S1E3': 'The Corgi Car',
-        'S1E4': 'The Crystal Car',
-        'S1E5': "The Cat's Car",
-        'S1E6': 'The Unfinished Car',
-        'S1E7': 'The Chrome Car',
-        'S1E8': 'The Ball Pit Car',
-        'S1E9': 'The Past Car',
-        'S1E10': 'The Engine',
-        'S2E1': 'The Black Market Car',
-        'S2E2': 'The Family Tree Car',
-        'S2E3': 'The Map Car',
-        'S2E4': 'The Toad Car',
-        'S2E5': 'The Parasite Car',
-        'S2E6': 'The Lucky Cat Car',
-        'S2E7': 'The Mall Car',
-        'S2E8': 'The Wasteland',
-        'S2E9': 'The Tape Car',
-        'S2E10': 'The Number Car'})
+    seasons={
+        1: {'color': '#534DA1',
+            'episodes': {
+                'S1E1': 'The Grid Car',
+                'S1E2': 'The Beach Car',
+                'S1E3': 'The Corgi Car',
+                'S1E4': 'The Crystal Car',
+                'S1E5': "The Cat's Car",
+                'S1E6': 'The Unfinished Car',
+                'S1E7': 'The Chrome Car',
+                'S1E8': 'The Ball Pit Car',
+                'S1E9': 'The Past Car',
+                'S1E10': 'The Engine'}},
+        2: {'color': '#9A9A75',
+            'episodes': {
+                'S2E1': 'The Black Market Car',
+                'S2E2': 'The Family Tree Car',
+                'S2E3': 'The Map Car',
+                'S2E4': 'The Toad Car',
+                'S2E5': 'The Parasite Car',
+                'S2E6': 'The Lucky Cat Car',
+                'S2E7': 'The Mall Car',
+                'S2E8': 'The Wasteland',
+                'S2E9': 'The Tape Car',
+                'S2E10': 'The Number Car'}}})
 
 show.plot_threads = [
     ('S1E1', 'S1E2', Plot.CAUSAL, 'Tulip trapped on the train'),
