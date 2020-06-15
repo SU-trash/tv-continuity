@@ -7,7 +7,7 @@ from show_continuity import *
 
 # Parsed from https://en.wikipedia.org/wiki/List_of_Avatar:_The_Last_Airbender_episodes
 show = Show(title='Avatar: The Last Airbender',
-            brief_title='Avatar',
+            brief_title='Avatar: TLA',
             seasons={
                 1: {'color': '#5599DF',
                     'episodes': {
