@@ -264,7 +264,7 @@ def plot_show_continuity(show, args):
                             auto_open=True)
 
 
-def plot_show_serialities(shows):
+def plot_show_serialities(shows, args):
     '''Plot an [Episodic <--> Serial] line chart with labelled nodes for all given shows.'''
     # Plot a vertical line from 0 to 1
     line_trace = go.Scatter(x=(0, 0), y=(0, 1), mode='lines',  # (0,0) to (1, 0)
@@ -308,8 +308,9 @@ def plot_show_serialities(shows):
         textposition='middle left')
 
     # Prepare the figure layout for the plot
+    title = args.title if args.title else 'Show Serialities'
     fig_layout = go.Layout(
-        title=dict(text=f"<br><b>Show Serialities</b>",
+        title=dict(text=f"<br><b>{title}</b>",
                    font=dict(color='black', size=16), x=0.5),
         showlegend=False,
         dragmode='pan',  # Default mouse mode
@@ -320,8 +321,13 @@ def plot_show_serialities(shows):
 
     fig = go.Figure(data=[line_trace, line_ends_trace, nodes_trace, percentage_labels_trace], layout=fig_layout)
 
-    plot_name = 'show_serialities_chart'
-    plotly.offline.plot(fig, filename=str(Path(OUTPUT_DIR) / (plot_name + '.html')), show_link=False, auto_open=True)
+    plot_filename = slugify(title)
+
+    if args.publish:
+        chart_studio.plotly.plot(fig, filename=plot_filename, sharing='public')
+    else:
+        plotly.offline.plot(fig, filename=str(Path(OUTPUT_DIR) / (plot_filename + '.html')), show_link=False,
+                            auto_open=True)
 
 
 if __name__ == '__main__':
@@ -333,11 +339,17 @@ if __name__ == '__main__':
                         dest="no_spoilers",
                         help="Additionally create a plot with no mouseover text"
                              + " (episode titles / connection descriptions)")
+    parser.add_argument('--title', type=str,
+                        help="Title of the chart to create. Only used for the --serialities chart"
+                             + " as individual show graphs have deterministic titles based on the show's title.")
     parser.add_argument('--publish', action='store_true', dest="publish", default=False,
                         help="Publicly publish the plot to the preset plotly profile.")
     parser.add_argument('--serialities', action='store_true', default=False,
                         help="Plot the given shows' seriality scores on a line.")
     args = parser.parse_args()
+
+    if args.title and not args.serialities:
+        parser.error("--title may only be used with --serialities")
 
     # Create the output directory if it does not exist
     (Path(__file__).parent / OUTPUT_DIR).mkdir(exist_ok=True)
@@ -347,8 +359,8 @@ if __name__ == '__main__':
 
     if args.serialities:
         print(f'Creating seriality plot...')
-        plot_show_serialities(show for show in shows if show.episodes())
+        plot_show_serialities(shows=(show for show in shows), args=args)
     else:
         for show in shows:
             print(f'Creating continuity plot for {show.title}...')
-            plot_show_continuity(show, args)
+            plot_show_continuity(show=show, args=args)

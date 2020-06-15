@@ -30,7 +30,7 @@ mouseover info giving details about each connection.
 ## Metrics
 ### Seriality
 A measure of how serial (as opposed to episodic) a show is.
-Currently calculated as (num_causal_eps + 1) / num_eps, where an episode is 'causal' if it causally 
+Currently calculated as `(num_causal_eps + 1) / num_eps`, where an episode is 'causal' if it causally
 affects the plot of any other episode. Connections with level Plot.REFERENTIAL aren't included.
 
 This algorithm satisfies the following axioms I considered 'nice' (where each dot is an episode):
@@ -52,7 +52,6 @@ future seasons. Per-season seriality also foregoes the +1 to the numerator unles
 a prior season (or is the first season), in order to satisfy the somewhat nice property (for e.g. a 2-ep S2):
 
 `S1_. .` = `S1 ._.` = 0.5
-
 
 ### Foreshadowing
 Separated into 'major' and 'minor'. Foreshadowing is considered 'minor' if it foreshadows the
