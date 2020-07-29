@@ -7,7 +7,7 @@ from show_continuity import *
 
 show = Show(
     title='Amphibia',
-    # Season colors from https://en.wikipedia.org/wiki/Amphibia_(TV_series)#Episodes
+    # Season colors / episode titles from https://en.wikipedia.org/wiki/Amphibia_(TV_series)#Episodes
     seasons={
         1: {'color': '#3CB371',
             'episodes': {
@@ -49,15 +49,62 @@ show = Show(
                 'S1E18b': 'Combat Camp',
                 'S1E19a': 'Children of the Spore',
                 'S1E19b': 'Anne of the Year',
-                'S1E20': 'Reunion'}}})
+                'S1E20': 'Reunion'}},
+        2: {'color': '#5499FF',
+            'episodes': {
+                'S2E1a': 'Handy Anne',
+                'S2E1b': 'Fort in the Road',
+                'S2E2a': 'The Ballad of Hopediah Plantar',
+                'S2E2b': 'Anne Hunter',
+                'S2E3a': 'Truck Stop Polly',
+                'S2E3b': 'A Caravan Named Desire',
+                'S2E4a': "Quarreler's Pass",
+                'S2E4b': 'Toadcatcher',
+                'S2E5a': 'Swamp and Sensibility',
+                'S2E5b': 'Wax Museum',
+                'S2E6': 'Marcy at the Gates',
+                'S2E7a': 'Scavenger Hunt',
+                'S2E7b': 'The Plantars Check In',
+                'S2E8a': 'Lost in Newtopia',
+                'S2E8b': 'Sprig Gets Schooled',
+                'S2E9a': 'Little Frogtown',
+                'S2E9b': 'Hopping Mall',
+                'S2E10a': 'The Sleepover to End All Sleepovers',
+                'S2E10b': 'A Day at the Aquarium'}}})
 
 show.plot_threads = [
     ('S1E1a', 'S1E1b', Plot.CAUSAL, "Anne trapped in Amphibia / Anne's homesickness"),
+    ('S1E1a', 'S1E1b', Plot.CAUSAL, "Sasha trapped in Amphibia"),
     ('S1E1a', 'S1E7b', Plot.CAUSAL, 'Music box arc'),
     ('S1E1b', 'S1E10b', Plot.CAUSAL, 'Sasha arc'),
-    ('S1E9b', 'S1E12b', Plot.CAUSAL, "The Plantar's losing their vegetable stand"),
+    ('S1E9b', 'S1E12b', Plot.CAUSAL, "Plantars losing their vegetable stand"),
+    ('S1E1a', 'S1E13b', Plot.CAUSAL, "Plantars preparing for the trip to find Anne a way home"),
     ('S1E7b', 'S1E16b', Plot.CAUSAL, 'Music box arc'),
+    ('S1E13b', 'S1E16b', Plot.REFERENTIAL, 'Failed trip to the archives'),
     ('S1E3a', 'S1E17a', Plot.CAUSAL, "Sprig's engagement to Maddie"),
     ('S1E7a', 'S1E19b', Plot.CAUSAL, "Sprig's crush on Ivy"),
     ('S1E10b', 'S1E19b', Plot.CAUSAL, 'Sasha arc'),
-    ('S1E19b', 'S1E20', Plot.SERIAL, "Grime/Sasha's invasion")]
+    ('S1E19b', 'S1E20', Plot.SERIAL, "Grime/Sasha's invasion"),
+    ('S1E20', 'S2E1a', Plot.CAUSAL, "Plantars' plan to get Anne home"),
+    ('S2E1a', 'S2E1b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E2a', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E2b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E3a', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E3b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E4a', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S1E20', 'S2E4b', Plot.CAUSAL, "Sasha/Grime as fugitives / Sasha's turmoil over Anne"),
+    ('S1E15b', 'S2E5a', Plot.REFERENTIAL, "Wally teaching Anne not to mind what others think"),
+    ('S2E1a', 'S2E5a', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E5b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S1E1a', 'S2E6', Plot.CAUSAL, "Marcy trapped in Amphibia"),
+    ('S2E1a', 'S2E6', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E6', 'S2E7a', Plot.CAUSAL, "Plantars and Marcy in Newtopia"),
+    ('S1E16b', 'S2E7b', Plot.CAUSAL, "Hop Pop hiding the music box"),
+    ('S2E6', 'S2E7b', Plot.CAUSAL, "Plantars and Marcy in Newtopia"),
+    ('S2E6', 'S2E8a', Plot.CAUSAL, "Plantars in Newtopia"),
+    ('S2E7b', 'S2E8a', Plot.REFERENTIAL, "Andrias/Marcy researching the music box"),
+    ('S2E6', 'S2E8b', Plot.CAUSAL, "Plantars in Newtopia"),
+    ('S2E6', 'S2E9a', Plot.CAUSAL, "Plantars in Newtopia"),
+    ('S2E6', 'S2E9b', Plot.CAUSAL, "Plantars in Newtopia"),
+    ('S2E6', 'S2E10a', Plot.CAUSAL, "Plantars in Newtopia"),
+    ('S2E7b', 'S2E10b', Plot.CAUSAL, "Andrias/Marcy researching the music box")]

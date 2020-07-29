@@ -345,12 +345,11 @@ class Show:
               " of episodes are foreshadowed by a past episode")
         print(f"{indent * ' '}{100 * (len(major_foreshadowed_eps) / len(included_eps)):.1f}%"
               + " of episodes have a major story element foreshadowed by a past episode")
-        if foreshadowed_eps:
-            if spoilers:
-                foreshadowed_revelations = Counter(revelation for *_, revelation in included_foreshadowing)
-                revelation, foreshadowed_count = foreshadowed_revelations.most_common(1)[0]
-                print(f"\n{indent * ' '}Most foreshadowed revelation: {revelation}" +
-                      f"; foreshadowed {foreshadowed_count} times")
+        if foreshadowed_eps and spoilers:
+            foreshadowed_revelations = Counter(revelation for *_, revelation in included_foreshadowing)
+            revelation, foreshadowed_count = foreshadowed_revelations.most_common(1)[0]
+            print(f"\n{indent * ' '}Most foreshadowed revelation: {revelation}" +
+                  f"; foreshadowed {foreshadowed_count} times")
 
     def print_continuity_stats(self, spoilers=False):
         print(f'{self.brief_title} Continuity Statistics:')
