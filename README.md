@@ -30,13 +30,14 @@ mouseover info giving details about each connection.
 ## Metrics
 ### Seriality
 A measure of how serial (as opposed to episodic) a show is.
-Currently calculated as `(num_causal_eps + 1) / num_eps`, where an episode is 'causal' if it causally
-affects the plot of any other episode. Connections with level Plot.REFERENTIAL aren't included.
+Currently calculated as `num_causal_eps / (num_eps - 1)`, where an episode is 'causal' if it causally
+affects the plot of any other episode. The -1 in the denominator accounts for the last episode not being able to be
+meaningfully defined as causal. Connections with level Plot.REFERENTIAL aren't included, only CAUSAL and higher.
 
 This algorithm satisfies the following axioms I considered 'nice' (where each dot is an episode):
+* `. .` = 0           (fully episodic shows give score 0)
 * `._.` = 1           (fully serial shows give score 1)
-* `._. .` = 2/3       (scale intuitive)
-* `. ._.` = `._. .`     (order-agnostic for isomorphic directed graphs)
+* `. ._.` = `._. .`   (order-agnostic for isomorphic directed graphs)
 * `.<:` = `._. .`     (episodes which cause many other episodes cannot have an undue effect on the score)
 * `._._.` > `.<:`     (seriality worth more than plot-spawned episodic eps)
 * `.<:>.` = `._._._.` (plot-spawned branches worth as much as serial if they converge again)
@@ -45,13 +46,7 @@ This algorithm satisfies the following axioms I considered 'nice' (where each do
 I will also likely be updating this algorithm to something more complex to handle causal loops without
 'over-inflating' the seriality % for episodes that include both plot progression and backstory.
 
-Per-season seriality is calculated as the number of causal episodes in the season, but without counting
-plot threads to future seasons. This results in the average of the per-season serialities tending to
-undercount the total seriality, but gives the nice property that a season's seriality is independent of any
-future seasons. Per-season seriality also foregoes the +1 to the numerator unless it continues any plot thread from
-a prior season (or is the first season), in order to satisfy the somewhat nice property (for e.g. a 2-ep S2):
-
-`S1_. .` = `S1 ._.` = 0.5
+Seriality can also be similarly calculated on a per-season basis.
 
 ### Foreshadowing
 Separated into 'major' and 'minor'. Foreshadowing is considered 'minor' if it foreshadows the

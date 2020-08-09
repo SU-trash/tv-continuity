@@ -9,6 +9,9 @@ from enum import IntEnum
 import json
 
 import dateparser
+# Fix strings that are just a year (e.g. "2020") from parsing as a valid date even when strict parsing is on
+# Workaround per https://github.com/scrapinghub/dateparser/issues/751
+dateparser.parser.no_space_parser_eligibile = lambda x: False
 import pandas as pd
 import wikipedia
 
@@ -48,6 +51,13 @@ class Foreshadowing(IntEnum):
     MAJOR = 2
 
 
+def last(i):
+    '''Helper for getting the last element of an iterable.'''
+    try:
+        return max(enumerate(i))[1]
+    except ValueError:
+        raise ValueError("last() arg is an empty sequence")
+
 def numerify(s):
     '''Convert the given string to an integer if possible, else a float, else leave it as a string.'''
     cur = s
@@ -81,14 +91,31 @@ class Show:
         if self.brief_title is None:
             self.brief_title = self.title
 
+        # Sanity checks on the inputted data
+        eps = list(self.episodes())
+        ep_ids = set()
+        for from_ep_id, to_ep_id, _, _ in self.plot_threads:
+            ep_ids.add(from_ep_id)
+            ep_ids.add(to_ep_id)
+
+        for from_ep_id, to_ep_id, _, _ in self.foreshadowing:
+            ep_ids.add(from_ep_id)
+            ep_ids.add(to_ep_id)
+
+        for ep_id in ep_ids:
+            if ep_id not in eps:
+                print(f'Warning: Unrecognized {self.brief_title} episode ID {ep_id}')
+
     def episodes(self):
         '''Return an iterable of the episodes from all seasons.'''
         return {ep: title for season in self.seasons for ep, title in self.seasons[season]['episodes'].items()}
 
     @classmethod
     def from_wikipedia(cls, title):
+        ep_num_col_names = ['No. inseason', 'No.']  # Possible column names that might contain the in-season ep number
         # TODO: Read title from page
         page = wikipedia.page(f'List of {title} episodes')
+        print(f'Parsing episode list from {page.url}')
         tables = pd.read_html(page.html())
         seasons = {}
         cur_season = 0
@@ -112,18 +139,15 @@ class Show:
             #         cur_ep_num += num_episodes
 
             # Parse episode titles from each season's table
-            if ('No.overall' in table.keys() or 'No.' in table.keys()
+            if (any(col_name in table.keys() for col_name in ep_num_col_names)
                     and any(' date' in k.lower() for k in table.keys())
                     and any('title' in k.lower() for k in table.keys())):
                 # Add a new entry in the season dict
                 cur_season += 1
                 seasons[cur_season] = {'episodes': {}}
 
-                # Get a column names agnostically of variations in their formats (or of the presence of hyperlinks)
-                if 'No.overall' in table.keys():
-                    ep_id_key = next(k for k in table.keys() if k == 'No.overall')
-                else:
-                    ep_id_key = next(k for k in table.keys() if k == 'No.')
+                # Get column names agnostically of variations in their formats (or of the presence of hyperlinks)
+                ep_id_key = next(k for k in table.keys() if k in ep_num_col_names)
                 title_key = next(k for k in table.keys() if 'title' in k.lower())
                 release_date_key = next(k for k in table.keys() if ' date' in k.lower())
 
@@ -132,10 +156,12 @@ class Show:
                                                               table[release_date_key]):
                     # Sanitize episode number/ID
                     # Strip hyperlink then convert to the simplest possible numeric type, else leave as string
-                    ep_id = numerify(str(ep_id).split('[')[0])
+                    ep_num = numerify(str(ep_id).split('[')[0])
                     # Ignore 'recap' episodes, e.g. '12.5'
-                    if isinstance(ep_id, float):
+                    if isinstance(ep_num, float):
                         continue
+
+                    ep_id = f'S{cur_season}E{ep_num}'
                     # Some tables have double-length episodes formatted as two rows, ignore these
                     if ep_id in seasons[cur_season]['episodes']:
                         continue
@@ -149,12 +175,15 @@ class Show:
 
                     # Ignore un-aired episodes ('release date' in future or is 'TBA' or some such)
                     # This also filters out tables that have the episode description as every cell of the row
-                    release_date_str = release_date_str.split('[')[0]  # Remove any trailing hyperlinks
-                    release_date = dateparser.parse(release_date_str)
+                    release_date_str = str(release_date_str).split('[')[0]  # Stringify and remove trailing hyperlinks
+                    release_date = dateparser.parse(release_date_str, settings={'STRICT_PARSING': True})
                     if release_date is None or release_date > today:
                         continue
 
                     seasons[cur_season]['episodes'][ep_id] = ep_title
+
+                # Ignore un-aired seasons
+                seasons = {k: v for k, v in seasons.items() if v['episodes']}
 
         return cls(title=title, seasons=seasons)
 
@@ -165,8 +194,7 @@ class Show:
             d = json.load(f)
 
             # Convert some data types back from the JSON limitations
-            seasons = {int(k): v for k, v in d['seasons'].items()}
-            episodes = {(int(k) if k.isdigit() else k): v for k, v in d['episodes'].items()}
+            seasons = {numerify(k): v for k, v in d['seasons'].items()}
 
             plot_threads = [(from_ep, to_ep, Plot(level), description)
                             for from_ep, to_ep, level, description in d['plot-threads']]
@@ -185,11 +213,7 @@ class Show:
 
     def seriality_score(self, season=None):
         '''Return a metric from 0 to 1, where 0 is fully episodic and 1 is fully serial. Currently:
-        (1 * show_has_any_conn
-         + sum_over_all_episodes(0.9 * has_forward_conn + 0.1 * has_backward_conn))
-         / num_episodes
-        Somewhat subjectively weighted (0.9 : 0.1) toward 'converging' story branches being more serial than
-        'diverging' story branches.
+        (num_causal_eps + 1) / num_eps, or 0 if no causal eps
         This metric was chosen for satisfying all of the following 'nice'/'intuitive' properties:
         Note: 'episodic' below refers to all episodes that don't affect a future one, and subdivided by whether
               their plot was affected by a previous episode (plot-spawned vs non-plot-spawned)
@@ -204,65 +228,38 @@ class Show:
         .<:>. = ._._._.  (plot-spawned branches worth as much as serial if they converge again)
         .<.>. = ._._.    (alternate paths between already-causally-connected episodes do not change the score)
         Args:
-            season: If not None, calculate seriality only for the given season's episodes, including plot threads
-            to them from prior seasons but ignoring those affecting future seasons. Note that due to this a show's
-            overall seriality is greater than the average of its seasons' serialities. E.g. season 1 might score 0%
-            seriality if it is internally episodic but a future season continues off some of its episodes.
+            season: If not None, calculate seriality only for the given season's episodes (but including plot threads
+                    to/from all seasons).
         '''
         if season is not None:
             assert season in self.seasons
 
             # Eps to calculate the seriality score of (E.g. Season 3)
             included_eps = set(self.seasons[season]['episodes'].keys())
-            # Eps to include plot threads to/from (E.g. Seasons 1-3)
-            known_eps = set()
-
-            eps_list = list(self.episodes().keys())  # For ease of referencing by index
-            cur_ep_idx = 0
-            # Add all seasons up the target season to 'known' episodes
-            for cur_season, cur_season_dict in self.seasons.items():
-                known_eps.update(cur_season_dict['episodes'].keys())
-
-                if cur_season == season:
-                    break
         else:
-            known_eps = self.episodes().keys()
             included_eps = self.episodes().keys()
 
-        included_plot_threads = tuple((from_ep, to_ep) for from_ep, to_ep, level, _ in self.plot_threads
-                                      if level >= Plot.CAUSAL
-                                      and ((from_ep in included_eps and to_ep in known_eps)
-                                           or (from_ep in known_eps and to_ep in included_eps)))
+        # If calculating for the overall show or the last season, the last episode cannot meaningfully be defined as
+        # either causal or non-causal (barring time travel), so don't include it. Otherwise, the denominator is the
+        # total number of episodes
+        denominator = len(included_eps)
+        if season is None or season == last(iter(self.seasons.keys())):
+            denominator -= 1
 
-        # This is a bit hacky but allows for scores of 0 (if there are any plot threads an implicit + 1 is given
-        # to make the metric intuitive, e.g. `. ._.` = 2/3)
-        if not included_plot_threads:
-            return 0
+        # If there are no future seasons to connect to, cannot meaningfully define causality
+        if denominator <= 0:
+            raise ZeroDivisionError(f"Cannot calculate seriality over {len(included_eps)} episode(s)")
 
-        causal_eps = set(from_ep for from_ep, _ in included_plot_threads
-                         if from_ep in included_eps)
+        causal_eps = set(from_ep for from_ep, _, level, _ in self.plot_threads
+                         if level >= Plot.CAUSAL
+                         and from_ep in included_eps)
 
-        total_causality = len(causal_eps)
-
-        # TODO: The below code isn't agnostic of the fact that we don't include plot threads to future seasons
-        if season is None or season == next(iter(self.seasons.keys())):
-            # Bias the weight to account for the last ep being unable to be causal
-            # This makes the metric more intuitive (imo), e.g. `. ._.` = 2/3
-            total_causality += 1
-        # If this is a season other than the first, the causal bonus will be provided if there is any connection to a
-        # previous season.
-        # This is somewhat hacky, but makes the per-season metric somewhat more intuitive imo
-        # (namely, for e.g. a 2 episode second season, it gives the property: S1_. . = S1 ._. = 0.5)
-        # TODO: This hand-waives away time travel...
-        elif any((from_ep in known_eps and from_ep not in included_eps)
-                 or (to_ep in known_eps and to_ep not in included_eps)
-                 for from_ep, to_ep in included_plot_threads):
-            total_causality += 1
-
-        return total_causality / len(included_eps)
+        # TODO: Flashbacks/time travel can currently over-inflate a show's score (.<->. . = 1, should be 0.5 imo)
+        # Cap seriality to 1 in case the last episode does cause a previous episode
+        return min(1, len(causal_eps) / denominator)
 
     def branching_factor(self, season=None):
-        '''Return a score from representing how much the show's plot branches, indicating the avg number of branches
+        '''Return a score representing how much the show's plot branches, indicating the avg number of branches
         entering every caused episode. Uncaused episodes are ignored.
         E.g. In a 2 ep show, the score is 0 if it is episodic, 1 if it is serial, and 2+ if there are 2+ plot branches
         leading from the first episode to the second (or vice-versa).
@@ -270,7 +267,7 @@ class Show:
         if season is not None:
             assert season in self.seasons
 
-            # Eps to calculate the seriality score of (E.g. Season 3)
+            # Eps to calculate the branching factor of (E.g. Season 3)
             included_eps = set(self.seasons[season]['episodes'].keys())
 
             # Eps to include plot threads to/from: all seasons up the target season (E.g. Seasons 1-3)
