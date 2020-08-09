@@ -48,7 +48,7 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
     edge_mouseover_points_y = []
     edge_mouseover_texts = []
 
-    for from_ep, to_ep, level, description in edge_data:
+    for from_ep, to_ep, level, *descriptions in edge_data:
         if from_ep not in ep_to_posn:
             print(f'Warning: Skipping data for unknown episode {repr(from_ep)}')
             continue
@@ -86,24 +86,24 @@ def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,
             edge_mouseover_points_x.append(curve_midpoint_x)
             edge_mouseover_points_y.append(curve_midpoint_y)
             if from_text is not None:
-                edge_mouseover_texts.append(f'{from_ep} ' + from_text.lower().format(to_ep=to_ep) + f'; {description}')
+                edge_mouseover_texts.append(f'{from_ep} ' + from_text.lower().format(to_ep=to_ep) + f'; {"; ".join(descriptions)}')
             elif to_text is not None:
-                edge_mouseover_texts.append(f'{to_ep} ' + to_text.lower().format(from_ep=from_ep) + f'; {description}')
+                edge_mouseover_texts.append(f'{to_ep} ' + to_text.lower().format(from_ep=from_ep) + f'; {"; ".join(descriptions)}')
 
         # Add mouseover text to the 'to' nodes
         if to_text is not None:
             node_mouseover_texts[ep_to_idx[to_ep]] += \
-                '<br>' + to_text.format(from_ep=from_ep) + f'; {description}'
+                '<br>' + to_text.format(from_ep=from_ep) + f'; {"; ".join(descriptions)}'
 
     # Add mouseover text to the 'from' nodes (in a separate loop so incoming continuity is listed
     # before outgoing continuity within a given episode)
     if from_text is not None:
-        for from_ep, to_ep, _, description in edge_data:
+        for from_ep, to_ep, _, *descriptions in edge_data:
             if from_ep not in ep_to_idx or to_ep not in ep_to_idx:
                 continue
 
             node_mouseover_texts[ep_to_idx[from_ep]] += \
-                '<br>' + from_text.format(to_ep=to_ep) + f'; {description}'
+                '<br>' + from_text.format(to_ep=to_ep) + f'; {"; ".join(descriptions)}'
 
     # Create a mouseover point in the middle of each edge, with the edge's description
     mouseovers_trace = go.Scatter(
@@ -235,7 +235,7 @@ def plot_show_continuity(show, args):
 
     base_file_name = slugify(show.brief_title)
 
-    if args.no_spoilers:
+    if not args.spoilers:
         plot_name = f'{base_file_name}_no_spoilers_continuity_graph'
         fig_traces = [node_trace] + legend_traces
     else:
@@ -335,10 +335,8 @@ if __name__ == '__main__':
     parser.add_argument(dest='show_data_modules', nargs='*', type=str,
                         default=shows.__all__,
                         help="The python module(s) to import show data from.")
-    parser.add_argument('--no-spoilers', action='store_true', default=False,
-                        dest="no_spoilers",
-                        help="Additionally create a plot with no mouseover text"
-                             + " (episode titles / connection descriptions)")
+    parser.add_argument('--spoilers', action='store_true',
+                        help="Include mouseover text with episode titles / connection descriptions")
     parser.add_argument('--title', type=str,
                         help="Title of the chart to create. Only used for the --serialities chart"
                              + " as individual show graphs have deterministic titles based on the show's title.")

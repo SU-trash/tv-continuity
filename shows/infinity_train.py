@@ -56,10 +56,10 @@ show.plot_threads = [
     ('S2E9', 'S2E10', Plot.SERIAL, 'MT confronting One-One')]
 
 show.foreshadowing = [
-    ('S1E1', 'S1E5', Foreshadowing.MAJOR, 'Conductor briefly flashes by in background when Tulip wakes up; Existence of the Conductor'),
-    ('S1E3', 'S1E8', Foreshadowing.MAJOR, r'''"I'll just keep your obituary on file then"; Atticus' death'''),
-    ('S1E3', 'S1E10', Foreshadowing.MAJOR, 'The Steward leaving after seeing One-One; One-One is the Conductor'),
-    ('S1E6', 'S1E10', Foreshadowing.MAJOR, 'One-One feeling the unfinished car is his fault; One-One is the Conductor'),
-    ('S1E9', 'S1E10', Foreshadowing.MAJOR, 'One-One able to easily control the memory tape; One-One is the Conductor'),
+    ('S1E1', 'S1E5', Foreshadowing.MAJOR, 'Conductor briefly flashes by in background when Tulip wakes up', 'Existence of the Conductor'),
+    ('S1E3', 'S1E8', Foreshadowing.MAJOR, r'''"I'll just keep your obituary on file then"''', "Atticus' death"),
+    ('S1E3', 'S1E10', Foreshadowing.MAJOR, 'The Steward leaving after seeing One-One', 'One-One is the Conductor'),
+    ('S1E6', 'S1E10', Foreshadowing.MAJOR, 'One-One feeling the unfinished car is his fault', 'One-One is the Conductor'),
+    ('S1E9', 'S1E10', Foreshadowing.MAJOR, 'One-One able to easily control the memory tape', 'One-One is the Conductor'),
     ('S1E10', 'S2E6', Foreshadowing.MAJOR, 'Grace in the passenger list'),
     ('S1E10', 'S2E7', Foreshadowing.MAJOR, 'Simon in the passenger list')]

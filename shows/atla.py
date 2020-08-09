@@ -174,8 +174,8 @@ show.plot_threads = [
     ('S3E14/15', 'S3E18-21', Plot.CAUSAL, "Azula starting to lose her sanity after Mai/Ty Lee's betrayal")]
 
 show.foreshadowing = [
-    ('S1E9', 'S3E18-21', Foreshadowing.MAJOR, 'Importance of the white lotus Pai Sho tile to Iroh; Order of the White Lotus'),
+    ('S1E9', 'S3E18-21', Foreshadowing.MAJOR, 'Importance of the white lotus Pai Sho tile to Iroh', 'Order of the White Lotus'),
     ('S2E10', 'S3E18-21', Foreshadowing.MAJOR, 'Book about Lion-Turtles in the library'),
     ('S1E17', 'S2E12', Foreshadowing.MAJOR, 'Schematics for the drill seen'),
     ('S2E13', 'S2E19', Foreshadowing.MAJOR, '"What I\'d give to be a metalbender"'),
-    ('S3E4', 'S3E18-21', Foreshadowing.MAJOR, 'White lotus Pai Sho tile gifted to Sokka; Order of the White Lotus')]
+    ('S3E4', 'S3E18-21', Foreshadowing.MAJOR, 'White lotus Pai Sho tile gifted to Sokka', 'Order of the White Lotus')]

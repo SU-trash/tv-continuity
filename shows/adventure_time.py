@@ -472,16 +472,16 @@ show.plot_threads = [
     ('S10E12', 'S10E13-16', Plot.SERIAL, 'The war against Gumbald')]
 
 show.foreshadowing = [
-    ('S1E3', 'S3E19/20', Foreshadowing.MAJOR, '"big nerd"; Ice King used to be an antiquarian and wore glasses'),
+    ('S1E3', 'S3E19/20', Foreshadowing.MAJOR, '"big nerd"', 'Ice King used to be an antiquarian and wore glasses'),
     ('S1E23', 'S1E25', Foreshadowing.MINOR, "Cosmic Gauntlet closely resembles Billy's gauntlet"),
-    ('S2E1', 'S6E40', Foreshadowing.MAJOR, '"you are by far the most evil thing I\'ve encountered"; Gunter is Orgalorg'),
-    ('S2E8', 'S4E15', Foreshadowing.MAJOR, '"If I had a penny for every time someone went crazy, hopped up on magic energy... I\'d be Abraham Lincoln"; Magic Man, Lincoln\'s penny.'),
-    ('S2E18', 'S6E2', Foreshadowing.MAJOR, '"grass can\'t hurt you"; Finn losing his arm to the grass sword'),
-    ('S3E19/20', 'S4E4', Foreshadowing.MAJOR, "Tree Trunks/Pig shown together; Tree Trunks/Pig's relationship"),
-    ('S3E19/20', 'S4E25', Foreshadowing.MAJOR, "Marceline frowning at the tapes; Ice King/Marceline's past"),
-    ('S5E34', 'S6E2', Foreshadowing.MAJOR, "Finn's past life missing an arm; Finn losing his arm"),
-    ('S5E34', 'S6E4', Foreshadowing.MAJOR, "PB gifting Finn's past life an arm; PB doing same for Finn"),
+    ('S2E1', 'S6E40', Foreshadowing.MAJOR, '"you are by far the most evil thing I\'ve encountered"', 'Gunter is Orgalorg'),
+    ('S2E8', 'S4E15', Foreshadowing.MAJOR, '"If I had a penny for every time someone went crazy, hopped up on magic energy... I\'d be Abraham Lincoln"', "Magic Man, Lincoln's penny."),
+    ('S2E18', 'S6E2', Foreshadowing.MAJOR, '"grass can\'t hurt you"; grass sword', 'Finn losing his arm'),
+    ('S3E19/20', 'S4E4', Foreshadowing.MAJOR, "Tree Trunks/Pig shown together", "Tree Trunks/Pig's relationship"),
+    ('S3E19/20', 'S4E25', Foreshadowing.MAJOR, "Marceline frowning at the tapes", "Ice King/Marceline's past"),
+    ('S5E34', 'S6E2', Foreshadowing.MAJOR, "Finn's past life missing an arm", 'Finn losing his arm'),
+    ('S5E34', 'S6E4', Foreshadowing.MAJOR, "PB gifting Finn's past life an arm", "PB gifting Finn an arm"),
     ('S6E6', 'S6E19', Foreshadowing.MAJOR, "Finn-sword appearing in Finn's dream"),
     ('S6E39', 'S6E42', Foreshadowing.MAJOR, 'The Catalyst Comet'),
-    ('S9E6', 'S9E9', Foreshadowing.MAJOR, "LSP's immunity to the slime corruption; LSP being the anti-elemental"),
-    ('S9E8', 'S9E9', Foreshadowing.MAJOR, "LSP's immunity to the candy corruption; LSP being the anti-elemental")]
+    ('S9E6', 'S9E9', Foreshadowing.MAJOR, "LSP's immunity to the slime corruption", "LSP being the anti-elemental"),
+    ('S9E8', 'S9E9', Foreshadowing.MAJOR, "LSP's immunity to the candy corruption", "LSP being the anti-elemental")]

@@ -290,7 +290,7 @@ show.plot_threads = [
     ('S4E20b', 'S4E21', Plot.SERIAL, 'Star destroying magic')]
 
 show.foreshadowing = [
-    ('S1E8b', 'S1E13', Foreshadowing.MAJOR, 'Fortune cookie: "A great evil has been unleashed."; Toffee as a \'bigger bad\''),
-    ('S1E8a', 'S2E12a', Foreshadowing.MAJOR, r'''"you're not the first monster to fall victim to their magic"; Toffee/Moon's history'''),
-    ('S1E10', 'S3E13', Foreshadowing.MAJOR, "Miss Heinous' cheek marks; Miss Heinous is Meteora Butterfly"),
-    ('S1E11a', 'S1E13', Foreshadowing.MAJOR, r'''"Sometimes your biggest threat is right under your nose."; Toffee's coup''')]
+    ('S1E8b', 'S1E13', Foreshadowing.MAJOR, 'Fortune cookie: "A great evil has been unleashed."', "Toffee as a 'bigger bad'"),
+    ('S1E8a', 'S2E12a', Foreshadowing.MAJOR, '"you\'re not the first monster to fall victim to their magic"', "Toffee/Moon's history"),
+    ('S1E10', 'S3E13', Foreshadowing.MAJOR, "Miss Heinous' cheek marks", 'Miss Heinous is Meteora Butterfly'),
+    ('S1E11a', 'S1E13', Foreshadowing.MAJOR, '"Sometimes your biggest threat is right under your nose."', "Toffee's coup")]

@@ -7,8 +7,8 @@ Still figuring out how far I'm going to run with this.
 Also note that while I've done my best to apply a consistent system to all shows, the data is still quite subjective.
 
 ## Usage
-`python3 show_continuity.py <module_name>`
-will print summary statistics about the given show, including:
+`python3 show_continuity.py [--spoilers] <module_name(s)>`
+will print summary statistics about the given show(s), including:
 * Plot causality metrics:
     * Seriality %'s; overall and per-season
     * Branching factor (avg incoming causal connections of serial episodes); overall and per-season
@@ -16,16 +16,16 @@ will print summary statistics about the given show, including:
     * Avg instances of foreshadowing per episode
     * % eps with foreshadowing and % eps with 'major' foreshadowing
     * % foreshadowed eps and % eps with a 'major' element foreshadowed
-    * Most foreshadowed ep
-    
+    * (If --spoilers enabled) Most foreshadowed revelation
+
 `python3 continuity_graph.py --serialities [<module 1> <module 2>]`
 will create and open an HTML line chart (made with Plotly) comparing the seriality %'s of all
 indicated shows, or all available shows if unspecified.
 
-`python3 continuity_graph.py [--no-spoilers] <module_name>`
+`python3 continuity_graph.py [--spoilers] <module_name>`
 will create and open an HTML graph (made with Plotly) showing plot and foreshadowing connections
-between episodes of the given show. If `--no-spoilers` is not included, nodes/edges will have
-mouseover info giving details about each connection.
+between episodes of the given show. If `--spoilers` is included, nodes/edges will have
+mouseover info including episode titles and details about each continuity thread.
 
 ## Metrics
 ### Seriality

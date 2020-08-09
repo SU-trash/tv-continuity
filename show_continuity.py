@@ -17,6 +17,7 @@ import wikipedia
 
 import shows
 
+
 class Plot(IntEnum):
     '''Enum representing the 'level' of an instance of plot continuity.
     Note: Re-appearance of an introduced character is not considered a plot point. Reuse of characters is considered
@@ -291,7 +292,7 @@ class Show:
         '''Print statistics on the plot threads present in the show. Currently a single summary statistic indicating
         the percent of seriality (as opposed to episodicity) in the show. See seriality_score().
         Args:
-            indent: Indent the output with this many spaces
+            indent: Indent the printed output this many spaces. Default 0.
         '''
         print(f'{indent * " "}Plot Seriality:')
         print(f'{indent * " "}Overall: {100 * self.seriality_score():.1f}%')
@@ -303,9 +304,11 @@ class Show:
         for season in self.seasons.keys():
             print(f'{indent * " "}Season {repr(season)}: {self.branching_factor(season=season):.2f}')
 
-    def print_foreshadowing_stats(self, season=None, indent=0):
+    def print_foreshadowing_stats(self, season=None, indent=0, spoilers=False):
         '''Args:
-            season: If not None, analyze only the given season and any foreshadowing to/from it.
+            season: If not None, analyze only the given season and any foreshadowing to/from it. Default None.
+            indent: Indent the printed output this many spaces. Default 0.
+            spoilers: If True, include spoiler analystics. Default False.
         '''
         if season is not None:
             assert season in self.seasons
@@ -316,18 +319,18 @@ class Show:
             included_eps = self.episodes().keys()
 
         # Filter out foreshadowing to/from seasons we aren't including
-        included_foreshadowing = tuple((from_ep, to_ep, level) for from_ep, to_ep, level, _ in self.foreshadowing
+        included_foreshadowing = tuple((from_ep, to_ep, *_) for from_ep, to_ep, *_ in self.foreshadowing
                                        if from_ep in included_eps or to_ep in included_eps)
 
-        foreshadowing_eps = set(from_ep for from_ep, _, _ in included_foreshadowing
+        foreshadowing_eps = set(from_ep for from_ep, *_ in included_foreshadowing
                                 if from_ep in included_eps)
-        foreshadowed_eps = Counter(to_ep for _, to_ep, _ in included_foreshadowing
-                                   if to_ep in included_eps)
+        foreshadowed_eps = set(to_ep for _, to_ep, *_ in included_foreshadowing
+                               if to_ep in included_eps)
 
-        major_foreshadowing_eps = set(from_ep for from_ep, _, level in included_foreshadowing
+        major_foreshadowing_eps = set(from_ep for from_ep, _, level, *_ in included_foreshadowing
                                       if from_ep in included_eps
                                       and level == Foreshadowing.MAJOR)
-        major_foreshadowed_eps = set(to_ep for _, to_ep, level in included_foreshadowing
+        major_foreshadowed_eps = set(to_ep for _, to_ep, level, *_ in included_foreshadowing
                                      if to_ep in included_eps
                                      and level == Foreshadowing.MAJOR)
 
@@ -337,18 +340,19 @@ class Show:
               + " of episodes foreshadow a future episode")
         print(f"{indent * ' '}{100 * (len(major_foreshadowing_eps) / len(included_eps)):.1f}%"
               + " of episodes have major foreshadowing for a future episode")
-        print()
 
-        print(f"{indent * ' '}{100 * (len(foreshadowed_eps) / len(included_eps)):.1f}%" +
+        print(f"\n{indent * ' '}{100 * (len(foreshadowed_eps) / len(included_eps)):.1f}%" +
               " of episodes are foreshadowed by a past episode")
         print(f"{indent * ' '}{100 * (len(major_foreshadowed_eps) / len(included_eps)):.1f}%"
               + " of episodes have a major story element foreshadowed by a past episode")
         if foreshadowed_eps:
-            ep_id, foreshadowed_count = foreshadowed_eps.most_common(1)[0]
-            print(f"{indent * ' '}Most foreshadowed: {ep_id}: {self.episodes()[ep_id]}" +
-                  f"; foreshadowed {foreshadowed_count} times")
+            if spoilers:
+                foreshadowed_revelations = Counter(revelation for *_, revelation in included_foreshadowing)
+                revelation, foreshadowed_count = foreshadowed_revelations.most_common(1)[0]
+                print(f"\n{indent * ' '}Most foreshadowed revelation: {revelation}" +
+                      f"; foreshadowed {foreshadowed_count} times")
 
-    def print_continuity_stats(self):
+    def print_continuity_stats(self, spoilers=False):
         print(f'{self.brief_title} Continuity Statistics:')
 
         if len(tuple(self.episodes())) <= 1:
@@ -359,7 +363,7 @@ class Show:
 
         print()
         if self.foreshadowing:
-            self.print_foreshadowing_stats(indent=4)
+            self.print_foreshadowing_stats(indent=4, spoilers=spoilers)
 
 
 if __name__ == '__main__':
@@ -367,10 +371,15 @@ if __name__ == '__main__':
     parser.add_argument(dest='show_data_modules', nargs='*', type=str,
                         default=shows.__all__,
                         help="The python module(s) to import show data from, from the 'shows' package.")
+    parser.add_argument('--spoilers', action='store_true',
+                        help="Allow showing spoilers in continuity data summary.")
     args = parser.parse_args()
 
     shows = [__import__(f'shows.{show_module_name}', fromlist=[f'show']).show
              for show_module_name in args.show_data_modules]
     for show in shows:
-        show.print_continuity_stats()
+        show.print_continuity_stats(spoilers=args.spoilers)
         print()
+
+    if not args.spoilers:
+        print("Note: Some analytics including spoilers were excluded; to include them add the --spoilers flag")

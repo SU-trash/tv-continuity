@@ -386,12 +386,12 @@ show.plot_threads = [
     ('S6E15', 'S6E16', Plot.SERIAL, "Bojack's near-drowning / call to Diane")]
 
 show.foreshadowing = [
-    ('S1E1', 'S6E15', Foreshadowing.MAJOR, "Bojack falling into pool in the intro(s); Bojack's near-drowning"),
-    ('S1E3', 'S3E11', Foreshadowing.MAJOR, '"until I die tragically young"; Sarah Lynn\'s death'),
-    ('S1E11', 'S6E15', Foreshadowing.MAJOR, '"I\'m too weak, too tired, so I just let the water take me under." "Yeesh, downer ending!"; Bojack\'s near-drowning'),
-    ('S3E10', 'S6E15', Foreshadowing.MAJOR, '"you\'re gonna go home, and you\'re gonna be so miserable you\'ll wanna kill yourself. And you\'re gonna have nobody left to stop you."; Bojack\'s near-drowning'),
-    ('S4E8', 'S4E10', Foreshadowing.MAJOR, '"I\'ve been getting really fidgety [...] like I got tiny little bumps crawling around on the inside of my skin"; Beatrice drugging Hollyhock\'s coffee'),
-    ('S4E8', 'S4E10', Foreshadowing.MAJOR, '"wanna have breakfast first?" "I\'m good with this coffee"; appetite suppression; Beatrice drugging Hollyhock\'s coffee"'),
-    ('S4E8', 'S4E10', Foreshadowing.MAJOR, "Hollyhock changing channels really fast and sorting all the house's loose change; Hyperactivity/hyperfocus; Beatrice drugging Hollyhock's coffee"),
-    ('S4E9', 'S4E10', Foreshadowing.MAJOR, 'Hollyhock counting her teeth; Hyperfocus; Beatrice drugging Hollyhock\'s coffee"'),
-    ('S5E11', 'S6E7', Foreshadowing.MAJOR, "Sharona appearing in a list of Bojack's regrets; The Sharona incident")]
+    ('S1E1', 'S6E15', Foreshadowing.MAJOR, "Bojack falling into pool in the intro(s)", "Bojack's near-drowning"),
+    ('S1E3', 'S3E11', Foreshadowing.MAJOR, '"until I die tragically young"', "Sarah Lynn's death"),
+    ('S1E11', 'S6E15', Foreshadowing.MAJOR, '"I\'m too weak, too tired, so I just let the water take me under." "Yeesh, downer ending!"', 'Bojack\'s near-drowning'),
+    ('S3E10', 'S6E15', Foreshadowing.MAJOR, '"you\'re gonna go home, and you\'re gonna be so miserable you\'ll wanna kill yourself. And you\'re gonna have nobody left to stop you."', "Bojack's near-drowning"),
+    ('S4E8', 'S4E10', Foreshadowing.MAJOR, '"I\'ve been getting really fidgety [...] like I got tiny little bumps crawling around on the inside of my skin"', "Beatrice drugging Hollyhock's coffee"),
+    ('S4E8', 'S4E10', Foreshadowing.MAJOR, '"wanna have breakfast first?" "I\'m good with this coffee"; appetite suppression', "Beatrice drugging Hollyhock's coffee"),
+    ('S4E8', 'S4E10', Foreshadowing.MAJOR, "Hollyhock changing channels really fast and sorting all the house's loose change; Hyperactivity/hyperfocus", "Beatrice drugging Hollyhock's coffee"),
+    ('S4E9', 'S4E10', Foreshadowing.MAJOR, 'Hollyhock counting her teeth; Hyperfocus', "Beatrice drugging Hollyhock's coffee"),
+    ('S5E11', 'S6E7', Foreshadowing.MAJOR, "Sharona appearing in a list of Bojack's regrets", 'The Sharona incident')]
