@@ -92,17 +92,11 @@ class Show:
             self.brief_title = self.title
 
         # Sanity checks on the inputted data
-        eps = list(self.episodes())
-        ep_ids = set()
-        for from_ep_id, to_ep_id, _, _ in self.plot_threads:
-            ep_ids.add(from_ep_id)
-            ep_ids.add(to_ep_id)
-
-        for from_ep_id, to_ep_id, _, _ in self.foreshadowing:
-            ep_ids.add(from_ep_id)
-            ep_ids.add(to_ep_id)
-
-        for ep_id in ep_ids:
+        eps = set(self.episodes())
+        for ep_id in set(ep_id
+                         for continuity_data in (self.plot_threads, self.foreshadowing)
+                         for from_ep_id, to_ep_id, *_ in continuity_data
+                         for ep_id in (from_ep_id, to_ep_id)):
             if ep_id not in eps:
                 print(f'Warning: Unrecognized {self.brief_title} episode ID {ep_id}')
 
