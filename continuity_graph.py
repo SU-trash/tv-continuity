@@ -284,12 +284,24 @@ def plot_show_serialities(shows, args):
                                      size=5,
                                      line=dict(width=1)))
 
-    # Add a node for each show (with title on the right)
+    # Sort shows by seriality and bucket any that are too close together
     shows_data = [(s.seriality_score(), s.brief_title) for s in shows]
-    scores, titles = zip(*shows_data) if shows_data else ((), ())  # Inverse zip assignment breaks if data is empty
-    nodes_trace = go.Scatter(x=tuple(0 for _ in scores),
-                             y=scores,
-                             text=titles,
+    shows_data.sort()
+
+    bucketed_data = []
+    last_score = -1
+    for score, title in shows_data:
+        if score - last_score < 0.02:
+            bucketed_data[-1].append((score, title))
+        else:
+            bucketed_data.append([(score, title)])
+            last_score = score  # only updated for first score of bucket so buckets don't increase past 0.02 size
+
+    # Add a node for each bucket (with title(s) on the right)
+    nodes_x = tuple(0 for _ in bucketed_data)
+    nodes_y = tuple(bucket[0][0] for bucket in bucketed_data)
+    nodes_trace = go.Scatter(x=nodes_x, y=nodes_y,
+                             text=tuple(', '.join(x[1] for x in bucket) for bucket in bucketed_data),
                              hoverinfo='none',
                              mode='markers+text',
                              textposition='middle right',
@@ -298,11 +310,18 @@ def plot_show_serialities(shows, args):
                                  size=5,
                                  line=dict(width=1)))  # The thickness of the node's border line
 
-    # Add labels of the seriality percentages on the left
+    # Add labels of the seriality percentages on the left. Label buckets with min and max scores in them if necessary
+    score_labels = []
+    for bucket in bucketed_data:
+        min_percent = f'{100 * bucket[0][0]:.0f}'  # Rounds to nearest %
+        max_percent = f'{100 * bucket[-1][0]:.0f}'
+        if min_percent == max_percent:  # 1-size bucket or multiple shows with same rounded score
+            score_labels.append(f'{min_percent}% ')
+        else:
+            score_labels.append(f'{min_percent}-{max_percent}% ')
     percentage_labels_trace = go.Scatter(
-        x=tuple(0 for _ in scores),
-        y=scores,
-        text=tuple(f'{100 * score:.1f}% ' for score in scores),
+        x=nodes_x, y=nodes_y,
+        text=tuple(score_labels),
         hoverinfo='none',
         mode='text',
         textposition='middle left')
