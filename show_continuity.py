@@ -107,7 +107,10 @@ class Show:
 
     @classmethod
     def from_wikipedia(cls, title):
-        ep_num_col_names = ['No. inseason', 'No.']  # Possible column names that might contain the in-season ep number
+        # Possible column names that might contain the in-season ep number
+        # We can't safely count episode numbers ourselves since some shows (typically those with two 10 min segments)
+        # have e.g. ep 2a and 2b, but may also interleave full-length episodes (2a, 2b, 3, 4a, ...)
+        ep_num_col_names = ['No. inseason', 'No.', 'Season Chapter']
         # TODO: Read title from page
         page = wikipedia.page(f'List of {title} episodes')
         print(f'Parsing episode list from {page.url}')
@@ -139,7 +142,8 @@ class Show:
                     and any('title' in k.lower() for k in table.keys())):
                 # Add a new entry in the season dict
                 cur_season += 1
-                seasons[cur_season] = {'episodes': {}}
+                seasons[cur_season] = {'color': '#000000',
+                                       'episodes': {}}
 
                 # Get column names agnostically of variations in their formats (or of the presence of hyperlinks)
                 ep_id_key = next(k for k in table.keys() if k in ep_num_col_names)
