@@ -30,7 +30,11 @@ show = Show(
                 'S1E16': 'Enchanting Grom Fright',
                 'S1E17': 'Wing It Like Witches',
                 'S1E18': 'Agony of a Witch',
-                'S1E19': 'Young Blood, Old Souls'}}})
+                'S1E19': 'Young Blood, Old Souls'}},
+        2: {'color': '#942C2C',
+            'episodes': {
+                'S2E1': "Separate Tides",
+                'S2E2': "Escaping Expulsion"}}})
 
 show.plot_threads = [
     # S1E1 is technically causal to every episode of the show but doesn't affect our seriality metric (by design)
@@ -61,7 +65,10 @@ show.plot_threads = [
     ('S1E13', 'S1E18', Plot.CAUSAL, "Luz attending Hexside"),
     ('S1E17', 'S1E18', Plot.REFERENTIAL, "Amity's broken leg"),
     ('S1E17', 'S1E19', Plot.REFERENTIAL, "Amity's broken leg"),
-    ('S1E18', 'S1E19', Plot.SERIAL, "Eda captured by the Emperor's Coven / Eda/Lilith and the curse")]
+    ('S1E18', 'S1E19', Plot.SERIAL, "Eda captured by the Emperor's Coven / Eda/Lilith and the curse"),
+    ('S1E19', 'S2E1', Plot.CAUSAL, "Eda/Lilith reconciled and their weakened magic"),
+    ('S1E19', 'S2E2', Plot.CAUSAL, "Eda/Lilith reconciled and their weakened magic"),
+    ('S1E16', 'S2E2', Plot.CAUSAL, "Amity's deepening friendship with the gang / grom photo")]
 
 show.foreshadowing = [
     ('S1E7', 'S1E16', Foreshadowing.MAJOR, "Amity's hideout being in the romance section", "Amity's crush on Luz")]

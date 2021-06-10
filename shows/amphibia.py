@@ -70,7 +70,24 @@ show = Show(
                 'S2E9a': 'Little Frogtown',
                 'S2E9b': 'Hopping Mall',
                 'S2E10a': 'The Sleepover to End All Sleepovers',
-                'S2E10b': 'A Day at the Aquarium'}}})
+                'S2E10b': 'A Day at the Aquarium',
+                'S2E11': 'The Shut-In!',
+                'S2E12a': 'Night Drivers',
+                'S2E12b': 'Return to Wartwood',
+                'S2E13a': 'Ivy on the Run',
+                'S2E13b': 'After the Rain',
+                'S2E14': 'The First Temple',
+                'S2E15a': 'New Wartwood',
+                'S2E15b': 'Friend or Frobo?',
+                'S2E16a': 'Toad to Redemption',
+                'S2E16b': 'Maddie & Marcy',
+                'S2E17a': 'The Second Temple',
+                'S2E17b': "Barrel's Warhammer",
+                'S2E18a': 'Bessie & MicroAngelo',
+                'S2E18b': 'The Third Temple',
+                'S2E19a': 'The Dinner',
+                'S2E19b': 'Battle of the Bands',
+                'S2E20': 'True Colors'}}})
 
 show.plot_threads = [
     ('S1E1a', 'S1E1b', Plot.CAUSAL, "Anne trapped in Amphibia / Anne's homesickness"),
@@ -84,6 +101,11 @@ show.plot_threads = [
     ('S1E3a', 'S1E17a', Plot.CAUSAL, "Sprig's engagement to Maddie"),
     ('S1E7a', 'S1E19b', Plot.CAUSAL, "Sprig's crush on Ivy"),
     ('S1E10b', 'S1E19b', Plot.CAUSAL, 'Sasha arc'),
+    ('S1E10a', 'S1E19b', Plot.CAUSAL, "Hop Pop having accidentally incited a rebellion against the toads"),
+    # Not sure how to cover multiple factors being mentioned as contributors to an event; e.g. both the defiance of the
+    # toad tax and Hop Pop's run for mayor. Counting them both as fully causal seems wrong so for now I'm only marking
+    # the first factor as causal and the rest as referential
+    ('S1E12b', 'S1E19b', Plot.REFERENTIAL, "Hop Pop having accidentally incited a rebellion against the toads"),
     ('S1E19b', 'S1E20', Plot.SERIAL, "Grime/Sasha's invasion"),
     ('S1E20', 'S2E1a', Plot.CAUSAL, "Plantars' plan to get Anne home"),
     ('S2E1a', 'S2E1b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
@@ -107,4 +129,36 @@ show.plot_threads = [
     ('S2E6', 'S2E9a', Plot.CAUSAL, "Plantars in Newtopia"),
     ('S2E6', 'S2E9b', Plot.CAUSAL, "Plantars in Newtopia"),
     ('S2E6', 'S2E10a', Plot.CAUSAL, "Plantars in Newtopia"),
-    ('S2E7b', 'S2E10b', Plot.CAUSAL, "Andrias/Marcy researching the music box")]
+    ('S2E7b', 'S2E10b', Plot.CAUSAL, "Andrias/Marcy researching the music box"),
+    ('S2E1a', 'S2E12a', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S2E1a', 'S2E12b', Plot.CAUSAL, "Plantars' trip to Newtopia"),
+    ('S1E5a', 'S2E12a', Plot.REFERENTIAL, "Bessy's manual"),
+    ('S2E1a', 'S2E13a', Plot.REFERENTIAL, "Plantars' trip to Newtopia"),
+    ('S1E16b', 'S2E13b', Plot.CAUSAL, "Hop Pop hiding the music box"),
+    ('S2E10b', 'S2E13b', Plot.CAUSAL, "The plan to charge the music box"),
+    ('S2E13b', 'S2E14', Plot.CAUSAL, "Anne having discovered Hop Pop's lie"),
+    ('S2E10b', 'S2E14', Plot.CAUSAL, "The plan to charge the music box"),
+    ('S2E14', 'S2E15a', Plot.CAUSAL, "Marcy in Wartwood after first temple"),
+    ('S2E1b', 'S2E15b', Plot.CAUSAL, "Robot that followed the Plantars"),
+    ('S1E20', 'S2E16a', Plot.CAUSAL, "The fall of Toad Tower"),
+    ('S2E14', 'S2E16b', Plot.CAUSAL, "Marcy in Wartwood after first temple"),
+    ('S2E10b', 'S2E17a', Plot.CAUSAL, "The plan to charge the music box"),
+    ('S2E4b', 'S2E17b', Plot.CAUSAL, "Sasha/Grime's plan to take over Newtopia"),
+    ('S2E9b', 'S2E18a', Plot.CAUSAL, "MicroAngelo"),
+    ('S2E10b', 'S2E18b', Plot.CAUSAL, "The plan to charge the music box"),
+    ('S1E20', 'S2E18b', Plot.CAUSAL, "Sasha/Anne's falling out"),
+    ('S2E4b', 'S2E18b', Plot.CAUSAL, "Sasha/Grime's plan to take over Newtopia"),
+    ('S1E20', 'S2E19a', Plot.CAUSAL, "Sasha/Anne's falling out"),
+    ('S2E18b', 'S2E19a', Plot.CAUSAL, "Sasha/Grime joining the Plantars"),
+    ('S2E18b', 'S2E19b', Plot.CAUSAL, "Sasha/Grime joining the Plantars"),
+    ('S2E10b', 'S2E20', Plot.CAUSAL, "The plan to charge the music box"),
+    ('S2E18b', 'S2E20', Plot.CAUSAL, "Sasha/Grime joining the Plantars / plan to take over Newtopia"),
+    ('S2E17b', 'S2E20', Plot.CAUSAL, "The toad armies supporting Grime/Sasha"),
+    ('S2E17a', 'S2E20', Plot.CAUSAL, "The improperly charged music box")]
+
+show.foreshadowing = [
+    ('S1E3b', 'S2E20', Foreshadowing.MAJOR, '''Blue-haired Anne in hallucination'''),
+    #('S1E3b', 'S3E??', Foreshadowing.MAJOR, '''Red/blue magic beings (Sasha/Anne) teaming up to defeat green magic monster (Marcy)'''),
+    ('S1E17a', 'S1E20', Foreshadowing.MAJOR, '''Rebellion mentioned in newspaper'''),
+    ('S2E6', 'S2E20', Foreshadowing.MAJOR, '''"One of these days, she's gonna get herself killed."''', "Andrias stabbing Marcy")]
+    #('S2E19b', 'S3E??', Foreshadowing.MAJOR, '''"I'm the personification of metamorphosis!"''', "Test tube Marcy"),
