@@ -56,7 +56,16 @@ show = Show(
                 'S4E7': 'Promortyus',
                 'S4E8': 'The Vat of Acid Episode',
                 'S4E9': 'Childrick of Mort',
-                'S4E10': 'Star Mort Rickturn of the Jerri'}}})
+                'S4E10': 'Star Mort Rickturn of the Jerri'}},
+        5: {'color': '#205876',
+            'episodes': {
+                'S5E1': 'Mort Dinner Rick Andre',
+                'S5E2': 'Mortyplicity',
+                'S5E3': 'A Rickconvenient Mort',
+                'S5E4': 'Rickdependence Spray',
+                'S5E5': "Amortycan Grickfitti",
+                'S5E6': "Rick & Morty's Thanksploitation Spectacular",
+                'S5E7': "Gotron Jerrysis Rickvangelion"}}})
 
 show.plot_threads = [
     ('S1E6', 'S1E8', Plot.REFERENTIAL, "Rick and Morty's bodies in the backyard"),
@@ -73,4 +82,8 @@ show.plot_threads = [
     ('S1E10', 'S4E6', Plot.REFERENTIAL, 'Evil Morty'),
     ('S3E1', 'S4E10', Plot.CAUSAL, 'Tammy and Bird-Person'),
     ('S3E3', 'S4E10', Plot.REFERENTIAL, 'The family therapy sessions'),
-    ('S3E9', 'S4E10', Plot.CAUSAL, "Beth's clone")]
+    ('S3E9', 'S4E10', Plot.CAUSAL, "Beth's clone"),
+    ('S4E10', 'S5E2', Plot.REFERENTIAL, "Space Beth"),
+    ('S2E6', 'S5E5', Plot.REFERENTIAL, '"Keep Summer safe"'),
+    ('S5E4', 'S5E7', Plot.CAUSAL, "The... the giant space incest baby."
+                                  + " Jesus christ why did they make this the only continuity in S5.")]

@@ -34,7 +34,13 @@ show = Show(
         2: {'color': '#942C2C',
             'episodes': {
                 'S2E1': "Separate Tides",
-                'S2E2': "Escaping Expulsion"}}})
+                'S2E2': "Escaping Expulsion",
+                'S2E3': "Echoes of the Past",
+                'S2E4': "Keeping Up A-fear-ances",
+                'S2E5': "Through the Looking Glass Ruins",
+                'S2E6': "Hunting Palismen",
+                'S2E7': "Eda's Requiem",
+                'S2E8': "Knock, Knock, Knockin' on Hooty's Door"}}})
 
 show.plot_threads = [
     # S1E1 is technically causal to every episode of the show but doesn't affect our seriality metric (by design)
@@ -68,7 +74,24 @@ show.plot_threads = [
     ('S1E18', 'S1E19', Plot.SERIAL, "Eda captured by the Emperor's Coven / Eda/Lilith and the curse"),
     ('S1E19', 'S2E1', Plot.CAUSAL, "Eda/Lilith reconciled and their weakened magic"),
     ('S1E19', 'S2E2', Plot.CAUSAL, "Eda/Lilith reconciled and their weakened magic"),
-    ('S1E16', 'S2E2', Plot.CAUSAL, "Amity's deepening friendship with the gang / grom photo")]
+    ('S1E16', 'S2E2', Plot.CAUSAL, "Amity's deepening friendship with the gang / grom photo"),
+    ('S1E18', 'S2E4', Plot.CAUSAL, "Origin of the curse"),
+    ('S1E19', 'S2E4', Plot.CAUSAL, "Eda/Lilith reconciled and their shared curse"),
+    ('S2E3', 'S2E4', Plot.REFERENTIAL, "King learning of his origin"),
+    ('S1E9', 'S2E5', Plot.REFERENTIAL, "Mattholomule/Gus' rivalry"),
+    ('S2E4', 'S2E5', Plot.CAUSAL, "Luz learning of a past human in the Boiling Isles"),
+    ('S1E16', 'S2E5', Plot.CAUSAL, "Amity/Luz' worsening gay panic"),
+    ('S1E10', 'S2E6', Plot.REFERENTIAL, "The Bat Queen and the orphaned palismans"),
+    ('S2E3', 'S2E7', Plot.CAUSAL, "King learning of his origin"),
+    ('S2E4', 'S2E7', Plot.REFERENTIAL, "The echo mouse"),
+    ('S2E3', 'S2E8', Plot.CAUSAL, "King learning of his origin"),
+    ('S1E19', 'S2E8', Plot.CAUSAL, "Eda's weakened magic / the curse"),
+    ('S2E7', 'S2E8', Plot.REFERENTIAL, "Eda/Raine's relationship"),
+    ('S2E5', 'S2E8', Plot.CAUSAL, "The Echo Mouse / Philip Wittebane's journal"),
+    ('S2E5', 'S2E8', Plot.CAUSAL, "Amity/Luz' worsening gay panic 2")]
 
 show.foreshadowing = [
-    ('S1E7', 'S1E16', Foreshadowing.MAJOR, "Amity's hideout being in the romance section", "Amity's crush on Luz")]
+    ('S1E7', 'S1E16', Foreshadowing.MAJOR, "Amity's hideout being in the romance section", "Amity's crush on Luz"),
+    #('S2E6', ?, Foreshadowing.MAJOR, "Most of Hunter's ancestors having been unable to use magic",
+    #                                 "Hunter descended from Philip Wittebane"),
+]
