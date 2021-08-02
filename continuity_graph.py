@@ -13,7 +13,7 @@ from slugify import slugify
 import shows
 from show_continuity import Plot
 
-OUTPUT_DIR = 'output'
+OUTPUT_DIR = 'docs'
 
 
 def get_continuity_edges(node_mouseover_texts, ep_to_posn, ep_to_idx, edge_data,

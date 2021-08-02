@@ -1,8 +1,9 @@
 # tv-continuity
 Quantitatively measuring continuity in TV shows (seriality and foreshadowing atm). Spoilers abound, obviously.
 
-Currently focused on western animation shows due to personal interest but open to PRs for any type of show.
-Still figuring out how far I'm going to run with this.
+Generated graphs available at https://su-trash.github.io/tv-continuity/
+
+Mostly focused on western animation shows due to personal interest but open to PRs for any type of show.
 
 Also note that while I've done my best to apply a consistent system to all shows, the data is still quite subjective.
 
