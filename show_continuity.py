@@ -298,15 +298,15 @@ class Show:
         Args:
             indent: Indent the printed output this many spaces. Default 0.
         '''
-        print(f'{indent * " "}Plot Seriality:')
-        print(f'{indent * " "}Overall: {100 * self.seriality_score():.1f}%')
-        for season in self.seasons.keys():
-            print(f'{indent * " "}Season {repr(season)}: {100 * self.seriality_score(season=season):.1f}%')
+        print(f'{indent * " "}Plot Seriality: {100 * self.seriality_score():.1f}%')
+        if len(self.seasons) > 1:
+            for season in self.seasons.keys():
+                print(f'{indent * " "}Season {repr(season)}: {100 * self.seriality_score(season=season):.1f}%')
 
-        print(f'\n{indent * " "}Plot Branching Factor:')
-        print(f'{indent * " "}Overall: {self.branching_factor():.2f}')
-        for season in self.seasons.keys():
-            print(f'{indent * " "}Season {repr(season)}: {self.branching_factor(season=season):.2f}')
+        print(f'\n{indent * " "}Plot Branching Factor: {self.branching_factor():.2f}')
+        if len(self.seasons) > 1:
+            for season in self.seasons.keys():
+                print(f'{indent * " "}Season {repr(season)}: {self.branching_factor(season=season):.2f}')
 
     def print_foreshadowing_stats(self, season=None, indent=0, spoilers=False):
         '''Args:
