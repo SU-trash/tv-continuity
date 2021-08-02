@@ -2,7 +2,9 @@ Quantitatively measuring/graphing continuity in TV shows (plot threads and fores
 
 ## Western Animation
 
-* [All seriality scores](seriality-in-western-animation.html)
+{% include_relative seriality-in-western-animation.html %}
+
+* [Direct link to above graph](seriality-in-western-animation.html)
 
 ### Individual Show Graphs (causal structure spoilers only)
 
