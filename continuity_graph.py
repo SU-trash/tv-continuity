@@ -330,7 +330,8 @@ def plot_show_serialities(shows, args):
     title = args.title if args.title else 'Show Serialities'
     fig_layout = go.Layout(
         title=dict(text=f"<br><b>{title}</b>",
-                   font=dict(color='black', size=16), x=0.5),
+                   font=dict(color='black', size=16),
+                   x=0.5),
         showlegend=False,
         dragmode='pan',  # Default mouse mode
         margin=dict(b=5, l=5, r=5, t=40, pad=0),

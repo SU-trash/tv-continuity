@@ -40,7 +40,9 @@ show = Show(
                 'S2E5': "Through the Looking Glass Ruins",
                 'S2E6': "Hunting Palismen",
                 'S2E7': "Eda's Requiem",
-                'S2E8': "Knock, Knock, Knockin' on Hooty's Door"}}})
+                'S2E8': "Knock, Knock, Knockin' on Hooty's Door",
+                'S2E9': "Eclipse Lake",
+                'S2E10': "Yesterday's Lie"}}})
 
 show.plot_threads = [
     # S1E1 is technically causal to every episode of the show but doesn't affect our seriality metric (by design)
@@ -83,15 +85,21 @@ show.plot_threads = [
     ('S1E16', 'S2E5', Plot.CAUSAL, "Amity/Luz' worsening gay panic"),
     ('S1E10', 'S2E6', Plot.REFERENTIAL, "The Bat Queen and the orphaned palismans"),
     ('S2E3', 'S2E7', Plot.CAUSAL, "King learning of his origin"),
-    ('S2E4', 'S2E7', Plot.REFERENTIAL, "The echo mouse"),
+    ('S2E5', 'S2E7', Plot.REFERENTIAL, "The echo mouse"),
     ('S2E3', 'S2E8', Plot.CAUSAL, "King learning of his origin"),
     ('S1E19', 'S2E8', Plot.CAUSAL, "Eda's weakened magic / the curse"),
     ('S2E7', 'S2E8', Plot.REFERENTIAL, "Eda/Raine's relationship"),
     ('S2E5', 'S2E8', Plot.CAUSAL, "The Echo Mouse / Philip Wittebane's journal"),
-    ('S2E5', 'S2E8', Plot.CAUSAL, "Amity/Luz' worsening gay panic 2")]
+    ('S2E5', 'S2E8', Plot.CAUSAL, "Amity/Luz' worsening gay panic 2"),
+    ('S2E5', 'S2E9', Plot.CAUSAL, "The Echo Mouse / Philip Wittebane's journal"),
+    ('S2E6', 'S2E9', Plot.CAUSAL, "Hunter falling from Belos' favor / Hunter's new palisman"),
+    ('S2E8', 'S2E9', Plot.CAUSAL, "Eda's new harpy form"),
+    ('S2E8', 'S2E9', Plot.CAUSAL, "Luz/Amity's relationship"),
+    ('S2E9', 'S2E10', Plot.CAUSAL, "The discovery of titan blood and the portal's design")]
 
 show.foreshadowing = [
     ('S1E7', 'S1E16', Foreshadowing.MAJOR, "Amity's hideout being in the romance section", "Amity's crush on Luz"),
     #('S2E6', ?, Foreshadowing.MAJOR, "Most of Hunter's ancestors having been unable to use magic",
     #                                 "Hunter descended from Philip Wittebane"),
+    #('S2E10', ?, Foreshadowing.MAJOR, "The two missing brothers", "Belos being Philip Wittebane's brother"),
 ]

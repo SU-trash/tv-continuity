@@ -8,7 +8,7 @@ from show_continuity import *
 show = Show(
     title='Rick and Morty',
     seasons={
-        1: {'color': '#804060',
+        1: {'color': '#25285D',
             'episodes': {
                 'S1E1': 'Pilot',
                 'S1E2': 'Lawnmower Dog',
@@ -21,7 +21,7 @@ show = Show(
                 'S1E9': 'Something Ricked This Way Comes',
                 'S1E10': 'Close Rick-counters of the Rick Kind',
                 'S1E11': 'Ricksy Business'}},
-        2: {'color': '#804060',
+        2: {'color': '#CFEDF7',
             'episodes': {
                 'S2E1': 'A Rickle in Time',
                 'S2E2': 'Mortynight Run',
@@ -33,7 +33,7 @@ show = Show(
                 'S2E8': 'Interdimensional Cable 2: Tempting Fate',
                 'S2E9': "Look Who's Purging Now",
                 'S2E10': 'The Wedding Squanchers'}},
-        3: {'color': '#804060',
+        3: {'color': '#376226',
             'episodes': {
                 'S3E1': 'The Rickshank Rickdemption',
                 'S3E2': 'Rickmancing the Stone',
@@ -45,7 +45,7 @@ show = Show(
                 'S3E8': "Morty's Mind Blowers",
                 'S3E9': "The ABC's of Beth",
                 'S3E10': 'The Rickchurian Mortydate'}},
-        4: {'color': '#804060',
+        4: {'color': '#58235B',
             'episodes': {
                 'S4E1': 'Edge of Tomorty: Rick Die Rickpeat',
                 'S4E2': 'The Old Man and the Seat',
@@ -65,14 +65,17 @@ show = Show(
                 'S5E4': 'Rickdependence Spray',
                 'S5E5': "Amortycan Grickfitti",
                 'S5E6': "Rick & Morty's Thanksploitation Spectacular",
-                'S5E7': "Gotron Jerrysis Rickvangelion"}}})
+                'S5E7': "Gotron Jerrysis Rickvangelion",
+                'S5E8': "Rickternal Friendshine of the Spotless Mort",
+                'S5E9': "Forgetting Sarick Mortshall",
+                'S5E10': "Rickmurai Jack"}}})
 
 show.plot_threads = [
     ('S1E6', 'S1E8', Plot.REFERENTIAL, "Rick and Morty's bodies in the backyard"),
     ('S1E11', 'S2E1', Plot.CAUSAL, 'Unfreezing time after the party cleanup'),
-    ('S1E11', 'S2E10', Plot.CAUSAL, "Tammy/Bird-Person's relationship"),
+    ('S1E11', 'S2E10', Plot.CAUSAL, "Tammy/Birdperson's relationship"),
     ('S2E10', 'S3E1', Plot.SERIAL, 'Rick in the galactic prison'),
-    ('S2E10', 'S3E1', Plot.CAUSAL, 'Tammy having killed Bird-Person'),
+    ('S2E10', 'S3E1', Plot.CAUSAL, 'Tammy having killed Birdperson'),
     ('S3E1', 'S3E2', Plot.CAUSAL, "Beth/Jerry's divorce"),
     ('S3E1', 'S3E5', Plot.CAUSAL, "Jerry's worsening self-esteem post-divorce"),
     ('S1E10', 'S3E7', Plot.CAUSAL, "Evil Morty's schemes"),
@@ -80,10 +83,13 @@ show.plot_threads = [
     ('S3E9', 'S3E10', Plot.CAUSAL, "Beth worrying about whether she's a clone"),
     ('S3E1', 'S3E10', Plot.CAUSAL, "Beth/Jerry's divorce"),
     ('S1E10', 'S4E6', Plot.REFERENTIAL, 'Evil Morty'),
-    ('S3E1', 'S4E10', Plot.CAUSAL, 'Tammy and Bird-Person'),
+    ('S3E1', 'S4E10', Plot.CAUSAL, 'Tammy and Birdperson'),
     ('S3E3', 'S4E10', Plot.REFERENTIAL, 'The family therapy sessions'),
     ('S3E9', 'S4E10', Plot.CAUSAL, "Beth's clone"),
     ('S4E10', 'S5E2', Plot.REFERENTIAL, "Space Beth"),
     ('S2E6', 'S5E5', Plot.REFERENTIAL, '"Keep Summer safe"'),
-    ('S5E4', 'S5E7', Plot.CAUSAL, "The... the giant space incest baby."
-                                  + " Jesus christ why did they make this the only continuity in S5.")]
+    ('S5E4', 'S5E7', Plot.CAUSAL, "The giant space incest baby"),
+    ('S4E10', 'S5E8', Plot.CAUSAL, "Phoenix/Birdperson's defeat"),
+    ('S5E9', 'S5E10', Plot.SERIAL, "Rick and the crows"),
+    ('S3E7', 'S5E10', Plot.CAUSAL, "Evil Morty having become president of the Citadel"),
+    ('S3E1', 'S5E10', Plot.REFERENTIAL, "Rick's wife / invention of portal gun")]
